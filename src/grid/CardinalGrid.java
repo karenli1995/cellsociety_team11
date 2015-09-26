@@ -7,9 +7,11 @@ import java.util.Set;
 import location.Location;
 import cell.Cell;
 
-public class FireGrid extends Grid{
+public class CardinalGrid extends Grid{
+	private int[] myX = {-1, 0, 0, 1};
+	private int[] myY = {0, -1, 1, 0};
 
-	public FireGrid(int width, int height, Set<Cell> cells) {
+	public CardinalGrid(int width, int height, Set<Cell> cells) {
 		super(width, height, cells);
 	}
 	
@@ -21,11 +23,9 @@ public class FireGrid extends Grid{
 	
 	@Override
 	public List<Location> getAdjacentLoc(Location loc) {
-		int[] x = {-1, 0, 0, 1};
-		int[] y = {0, -1, 1, 0};
-		List<Location> list = new ArrayList<>(x.length);
-		for(int i=0;i<x.length;i++){
-			Location neighbor = loc.getLocation(loc.getX()+x[i], loc.getY()+y[i]);
+		List<Location> list = new ArrayList<>(myX.length);
+		for(int i=0;i<myX.length;i++){
+			Location neighbor = loc.getLocation(loc.getX()+myX[i], loc.getY()+myY[i]);
 			if(neighbor!=null){
 				list.add(neighbor);
 			}
