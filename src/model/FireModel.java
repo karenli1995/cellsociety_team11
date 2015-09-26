@@ -8,7 +8,7 @@ import location.Location;
 import location.ToroidalLocation;
 import state.FireState;
 import cell.FireCell;
-import grid.FireGrid;
+import grid.CardinalGrid;
 import grid.SquareGrid;
 import grid.TriangleGrid;
 import gui.CellSocietyGUI;
@@ -56,7 +56,7 @@ public class FireModel extends AbstractModel {
 		});
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
-		myGrid = new FireGrid(getWidth(), getHeight(), myCells);
+		myGrid = new CardinalGrid(getWidth(), getHeight(), myCells);
 		myGrid.setNeighbors();
 		setupGraph(STATE_NAMES);
 	}
@@ -100,7 +100,7 @@ public class FireModel extends AbstractModel {
 		for (int x = 0; x < mat.length; x++)
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x,y,mat[x][y]);	
-		myGrid = new FireGrid(getWidth(), getHeight(), myCells);
+		myGrid = new CardinalGrid(getWidth(), getHeight(), myCells);
 		myGrid.setNeighbors();
 		setupGraph(STATE_NAMES);
 	}
@@ -111,4 +111,5 @@ public class FireModel extends AbstractModel {
 		myCells.add(cell);
 	}
 
+	
 }

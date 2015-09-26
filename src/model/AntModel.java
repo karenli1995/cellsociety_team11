@@ -20,9 +20,15 @@ public class AntModel extends AbstractModel{
 	}
 
 	@Override
-	public void intialize(Map<String, String> parameters) {
+	public void initialize(Map<String, String> parameters) throws Exception {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected Map<Integer, Double> getDataPoints() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
