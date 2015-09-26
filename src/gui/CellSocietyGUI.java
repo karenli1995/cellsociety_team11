@@ -44,6 +44,8 @@ public class CellSocietyGUI {
 	private static final double BUTTON_HEIGHT = 40;
 
 	private static final double GRID_MARGIN = 50;
+	private static final int GRAPH_X_RANGE = 100;
+	private static final boolean GRAPH_AUTO_RANGE = false;
 
 	private static final double MIN_FPS = 1;
 	private static final double MAX_FPS = 60;
@@ -258,9 +260,9 @@ public class CellSocietyGUI {
 
 	public void addGraph() {
 		// defining the axes
-		final NumberAxis xAxis = new NumberAxis();
+		final NumberAxis xAxis = new NumberAxis("Frame Number", 0, GRAPH_X_RANGE, 50);
+		xAxis.setAutoRanging(GRAPH_AUTO_RANGE);
 		final NumberAxis yAxis = new NumberAxis();
-		xAxis.setLabel("Frame Number");
 		// creating the chart
 		myLineChart = new LineChart<Number, Number>(xAxis, yAxis);
 		mySeriesMap = new HashMap<Integer, XYChart.Series<Number, Number>>();
@@ -284,11 +286,21 @@ public class CellSocietyGUI {
 
 	public void resetGraph() {
 		myLineChart.getData().clear();
+		if(!GRAPH_AUTO_RANGE){
+			NumberAxis xAxis = (NumberAxis)myLineChart.getXAxis();
+			xAxis.setLowerBound(0);
+			xAxis.setUpperBound(GRAPH_X_RANGE);
+		}
 	}
 
 	public void addDataPoint(Number xVal, Number yVal, int seriesNum) {
 		ObservableList<Data<Number, Number>> list = mySeriesMap.get(seriesNum).getData();
 		list.add(new XYChart.Data<Number, Number>(xVal, yVal));
+		if(!GRAPH_AUTO_RANGE && xVal.intValue()>GRAPH_X_RANGE){
+			NumberAxis xAxis = (NumberAxis)myLineChart.getXAxis();
+			xAxis.setLowerBound(xVal.intValue()-GRAPH_X_RANGE);
+			xAxis.setUpperBound(xVal.intValue());
+		}
 	}
 
 	public void createGridArea() {

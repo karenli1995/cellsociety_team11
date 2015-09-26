@@ -35,11 +35,19 @@ public class FireModel extends AbstractModel {
 	}
 
 	@Override
+	protected void setBasicConfig(Map<String, String> parameters){
+		super.setBasicConfig(parameters);
+		if(parameters.containsKey("probCatchFire")){
+			double tmp = Double.parseDouble(parameters.get("probCatchFire"));
+			myProbCatchFire = (tmp<=1 && tmp>=0)?tmp:myProbCatchFire;
+		}
+			
+		
+	}
+	
+	@Override
 	public void initialize(Map<String, String> parameters, List<Map<String, String>> cells) {
-		myCells.clear();
 		setBasicConfig(parameters);
-		if(parameters.containsKey("probCatchFire"))
-			myProbCatchFire = Double.parseDouble(parameters.get("probCatchFire"));
 		cells.forEach(map -> {
 			int x = Integer.parseInt(map.get("x"));
 			int y = Integer.parseInt(map.get("y"));
@@ -60,7 +68,6 @@ public class FireModel extends AbstractModel {
 		int total = getWidth()*getHeight();
 		int numBurning = Integer.parseInt(parameters.get("numBurning"));
 		int numEmpty = Integer.parseInt(parameters.get("numEmpty"));
-		myProbCatchFire = Double.parseDouble(parameters.get("probCatchFire"));
 		for(int i=0;i<mat.length;i++){
 			Arrays.fill(mat[i], TREE_STATE);
 		}

@@ -1,3 +1,4 @@
+
 package model;
 
 import java.util.Collections;
@@ -59,34 +60,29 @@ public abstract class AbstractModel implements Model {
 	
 	public void clear() {
 		myStepNum = 0;
-		myGrid.clear();
+		if(myGrid!=null)
+			myGrid.clear();
+		if(myCells!=null)
+			myCells.clear();
 		myCSGUI.resetGraph();
 	}
 	
-	protected void setupGraph(String[] names) {
+	protected void setupGraph(Map<Integer,String> names) {
 		myCSGUI.resetGraph();
-		for(int i = 0; i < names.length; i++) {
-			myCSGUI.addSeries(i, names[i]);
-		}
-		updateGraph();
+		names.forEach((k,v)->{myCSGUI.addSeries(k, v);});
 	}
 	
 	protected void updateGraph() {
-		HashMap<Integer, Integer> statemap = new HashMap<Integer, Integer>();
-		for(Cell cell: myCells) {
-			int state = cell.getState().getStateInt();
-			Integer numInState = statemap.get(state);
-			if(numInState == null)
-				numInState = 0;
-			++numInState;
-			statemap.put(state, numInState);
-		}
-		for(int key: statemap.keySet()) {
-			myCSGUI.addDataPoint(myStepNum, statemap.get(key), key);
-		}
+		getDataPoints().forEach((series,value)->{myCSGUI.addDataPoint(myStepNum,value,series);});
 	}
+	/**
+	 * 
+	 * @return Map from Series to Y value
+	 */
+	protected abstract Map<Integer, Double> getDataPoints();
 	
 	protected void setBasicConfig(Map<String, String> parameters){
+		clear();
 		myParameters = parameters;
 		int width = Integer.parseInt(myParameters.get("width"));
 		int height = Integer.parseInt(myParameters.get("height"));

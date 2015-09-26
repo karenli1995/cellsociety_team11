@@ -94,3 +94,4 @@ public abstract class Dialog extends javafx.scene.control.Dialog<Map<String, Str
 	protected abstract String getName();
 
 }
+

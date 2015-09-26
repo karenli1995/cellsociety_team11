@@ -1,5 +1,7 @@
+
 package model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,6 @@ public class GOLModel extends AbstractModel {
 	private static final double DEFAULT_PERCENT_LIVE_CELLS = 0.5;
 	private static final int DEAD_STATE = 0;
 	private static final int LIVE_STATE = 1;
-	private static String STATE_NAMES[] = {"Dead", "Alive"};
 	
 	public GOLModel(CellSocietyGUI csGui) {
 		super(csGui);
@@ -27,8 +28,16 @@ public class GOLModel extends AbstractModel {
 	}
 	
 	@Override
+	protected void setBasicConfig(java.util.Map<String,String> parameters) {
+		super.setBasicConfig(parameters);
+		Map<Integer,String> map = new HashMap<>();
+		map.put(DEAD_STATE, "Dead");
+		map.put(LIVE_STATE, "Live");
+		setupGraph(map);
+	};
+	
+	@Override
 	public void initialize(Map<String, String> parameters, List<Map<String, String>> cells) {
-		myCells.clear();
 		setBasicConfig(parameters);
 		cells.forEach(map -> {
 			int x = Integer.parseInt(map.get("x"));
@@ -40,7 +49,6 @@ public class GOLModel extends AbstractModel {
 			System.err.println("Missing Cell Info!");
 		myGrid = new TriangleGrid(getWidth(), getHeight(), myCells);
 		myGrid.setNeighbors();
-		setupGraph(STATE_NAMES);
 	}
 
 	@Override
@@ -70,11 +78,21 @@ public class GOLModel extends AbstractModel {
 				addCell(x,y,mat[x][y]);	
 		myGrid = new TriangleGrid(getWidth(), getHeight(), myCells);
 		myGrid.setNeighbors();
-		setupGraph(STATE_NAMES);
 	}
 	
 	private void addCell(int x,int y,int state){
 		Cell cell = new GOLCell(new GOLState(state), new ToroidalLocation(x,y, myWidth, getHeight()), myCSGUI);
 		myCells.add(cell);
 	}
+
+	@Override
+	protected Map<Integer, Double> getDataPoints() {
+		int[] states = new int[2];
+		myCells.forEach(cell->{states[cell.getState().getStateInt()]++;});
+		Map<Integer, Double> stateMap = new HashMap<>();
+		stateMap.put(DEAD_STATE, (double)states[DEAD_STATE]);
+		stateMap.put(LIVE_STATE, (double)states[LIVE_STATE]);
+		return stateMap;
+	}
 }
+
