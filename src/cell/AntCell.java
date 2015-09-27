@@ -19,18 +19,20 @@ public class AntCell extends AbstractCell{
 	private static final int HOME_PHEROMONE_STATE = 3;
 	private static final int FOOD_PHEROMONE_STATE = 4;
 	
+	private static final int ANT_STATE = 5;
+	
 	private static final int NUM_STATES = 3;
 	
 	AntState myAntState;
 	
-	private int myEvaporationRate;
-	private int myDiffusionRate;
+	private double myEvaporationRate;
+	private double myDiffusionRate;
 	
-	private int myFoodPheromone;
-	private int myHomePheromone;
+	private double myFoodPheromone;
+	private double myHomePheromone;
 	private boolean myHasFoodItem;
 
-	AntCell(State s, Location l, CellSocietyGUI CSGUI) {
+	public AntCell(State s, Location l, CellSocietyGUI CSGUI) {
 		super(s, NUM_STATES, l, CSGUI);
 		myAntState = (AntState) s;
 		
@@ -40,7 +42,7 @@ public class AntCell extends AbstractCell{
 		myHasFoodItem = false;
 	}
 	
-	public void setParameters(int evaporationRate, int diffusionRate){
+	public void setParameters(double evaporationRate, double diffusionRate){
 		myEvaporationRate = evaporationRate;
 		myDiffusionRate = diffusionRate;
 	}
@@ -53,19 +55,19 @@ public class AntCell extends AbstractCell{
 		return myHasFoodItem;
 	}
 	
-	private int getMyFoodPheromone(){
+	private double getMyFoodPheromone(){
 		return myFoodPheromone;
 	}
 	
-	private void setMyFoodPheromone(int fp){
+	private void setMyFoodPheromone(double fp){
 		myFoodPheromone = fp;
 	}
 
-	private int getMyHomePheromone(){
+	private double getMyHomePheromone(){
 		return myHomePheromone;
 	}
 	
-	private void setMyHomePheromone(int hp){
+	private void setMyHomePheromone(double hp){
 		myHomePheromone = hp;
 	}
 
@@ -74,18 +76,20 @@ public class AntCell extends AbstractCell{
 	@Override
 	public void determineNextState() {
 		//evaporation
-		int foodPheromoneAfterEvap = this.getMyFoodPheromone() - (this.getMyFoodPheromone()*myEvaporationRate);
+		double foodPheromoneAfterEvap = this.getMyFoodPheromone() - (this.getMyFoodPheromone()*myEvaporationRate);
 		if(foodPheromoneAfterEvap > 0){
 			this.setMyFoodPheromone(foodPheromoneAfterEvap);
 		}else{
 			this.setMyFoodPheromone(0);
+			this.getState().setNextState(EMPTY_STATE);
 		}
 		
-		int homePheromoneAfterEvap = this.getMyHomePheromone() - (this.getMyHomePheromone()*myEvaporationRate);
+		double homePheromoneAfterEvap = this.getMyHomePheromone() - (this.getMyHomePheromone()*myEvaporationRate);
 		if(homePheromoneAfterEvap > 0){
 			this.setMyFoodPheromone(homePheromoneAfterEvap);
 		}else{
 			this.setMyHomePheromone(0);
+			this.getState().setNextState(EMPTY_STATE);
 		}
 		
 		
@@ -101,11 +105,11 @@ public class AntCell extends AbstractCell{
 		if(myAntState.getStateInt() == NEST_STATE && myAntState.getContainsAnt() == true){
 			ArrayList<Cell> neighbors = (ArrayList<Cell>) this.getNeighborCells();
 
-			int maxPheromone=0;
+			double maxPheromone=0;
 			AntCell chosenCellMaxPheromone = this;
 			for(int i=0; i<neighbors.size(); i++) {
 				AntCell chosenCell = (AntCell) neighbors.get(i);
-				int otherFoodPheromone = chosenCell.getMyFoodPheromone();
+				double otherFoodPheromone = chosenCell.getMyFoodPheromone();
 				if (otherFoodPheromone > maxPheromone){
 					maxPheromone = otherFoodPheromone;
 					chosenCellMaxPheromone = chosenCell;
@@ -115,13 +119,15 @@ public class AntCell extends AbstractCell{
 				//drop home pheromones on current state
 				//dropHomePheromones(chosenCellMaxPheromone, neighbors);
 				dropPheromones(chosenCellMaxPheromone, neighbors, NEST_STATE);
-				this.getState().setNextState(HOME_PHEROMONE_STATE);  //check this
+				chosenCellMaxPheromone.getState().setNextState(ANT_STATE);
 				
 				
 				AntState prevCellState = (AntState) this.getState();
+				prevCellState.setNextState(HOME_PHEROMONE_STATE);  //check this
 				prevCellState.setContainsAnt(false);
 				
 				AntState chosenCellState = (AntState) chosenCellMaxPheromone.getState();
+				chosenCellState.setNextState(ANT_STATE);
 				chosenCellState.setContainsAnt(true);
 				if(chosenCellState.getStateInt() == FOOD_SOURCE_STATE){
 					chosenCellState.setNextState(EMPTY_STATE);
@@ -132,6 +138,7 @@ public class AntCell extends AbstractCell{
 				this.getState().setNextState(myAntState.getStateInt());
 				AntCell chosenCell = (AntCell) neighbors.get(0);
 				AntState chosenCellState = (AntState) chosenCell.getState();
+				chosenCellState.setNextState(ANT_STATE);
 				chosenCellState.setContainsAnt(true);
 			}
 		}
@@ -141,11 +148,11 @@ public class AntCell extends AbstractCell{
 		if(myAntState.getStateInt() == FOOD_SOURCE_STATE && myAntState.getContainsAnt() == true){
 			ArrayList<Cell> neighbors = (ArrayList<Cell>) this.getNeighborCells();
 
-			int maxPheromone=0;
+			double maxPheromone=0;
 			AntCell chosenCellMaxPheromone = this;
 			for(int i=0; i<neighbors.size(); i++) {
 				AntCell chosenCell = (AntCell) neighbors.get(i);
-				int otherFoodPheromone = chosenCell.getMyHomePheromone();
+				double otherFoodPheromone = chosenCell.getMyHomePheromone();
 				if (otherFoodPheromone > maxPheromone){
 					maxPheromone = otherFoodPheromone;
 					chosenCellMaxPheromone = chosenCell;
@@ -154,14 +161,14 @@ public class AntCell extends AbstractCell{
 			if(maxPheromone > 0){
 				//drop food pheromones on current state
 				//dropFoodPheromones(chosenCellMaxPheromone, neighbors);
-				dropPheromones(chosenCellMaxPheromone, neighbors, FOOD_SOURCE_STATE);
-				
-				this.getState().setNextState(FOOD_PHEROMONE_STATE);  //check this
+				dropPheromones(chosenCellMaxPheromone, neighbors, FOOD_SOURCE_STATE);				
 
 				AntState prevCellState = (AntState) this.getState();
+				prevCellState.setNextState(FOOD_PHEROMONE_STATE);  //check this
 				prevCellState.setContainsAnt(false);
 				
 				AntState chosenCellState = (AntState) chosenCellMaxPheromone.getState();
+				chosenCellState.setNextState(ANT_STATE);
 				chosenCellState.setContainsAnt(true);
 				if(chosenCellState.getStateInt() == NEST_STATE){
 					//drop food item
@@ -172,6 +179,7 @@ public class AntCell extends AbstractCell{
 				this.getState().setNextState(myAntState.getStateInt());
 				AntCell chosenCell = (AntCell) neighbors.get(0);
 				AntState chosenCellState = (AntState) chosenCell.getState();
+				chosenCellState.setNextState(ANT_STATE);
 				chosenCellState.setContainsAnt(true);
 			}
 		}
@@ -185,16 +193,16 @@ public class AntCell extends AbstractCell{
 			else setMyFoodPheromone(MAX_FOOD_PHEROMONE);
 		}else{
 			if(state == NEST_STATE){ 
-				int maxHomePheromones = maxPheromoneCell.getMyHomePheromone();
-				int des = maxHomePheromones-2;
-				int d = des - this.getMyHomePheromone();
+				double maxHomePheromones = maxPheromoneCell.getMyHomePheromone();
+				double des = maxHomePheromones-2;
+				double d = des - this.getMyHomePheromone();
 				if(d > 0){
 					this.setMyHomePheromone(getMyHomePheromone() + d);
 					
 					//diffusion -- might want to check if this works correctly
 					for(int i=0; i<neighbors.size(); i++) {
 						AntCell chosenCell = (AntCell) neighbors.get(i);
-						int chosenHomePheromone = chosenCell.getMyHomePheromone();
+						double chosenHomePheromone = chosenCell.getMyHomePheromone();
 						
 						chosenCell.setMyHomePheromone(chosenHomePheromone + (d * myDiffusionRate));
 						chosenCell.getState().setNextState(HOME_PHEROMONE_STATE);
@@ -202,16 +210,16 @@ public class AntCell extends AbstractCell{
 				}
 				
 			}else{
-				int maxFoodPheromones = maxPheromoneCell.getMyFoodPheromone();
-				int des = maxFoodPheromones-2;
-				int d = des - this.getMyFoodPheromone();
+				double maxFoodPheromones = maxPheromoneCell.getMyFoodPheromone();
+				double des = maxFoodPheromones-2;
+				double d = des - this.getMyFoodPheromone();
 				if(d > 0){
 					this.setMyFoodPheromone(getMyFoodPheromone() + d);
 					
 					//diffusion -- might want to check if this works correctly
 					for(int i=0; i<neighbors.size(); i++) {
 						AntCell chosenCell = (AntCell) neighbors.get(i);
-						int chosenFoodPheromone = chosenCell.getMyFoodPheromone();
+						double chosenFoodPheromone = chosenCell.getMyFoodPheromone();
 						
 						chosenCell.setMyFoodPheromone(chosenFoodPheromone + (d * myDiffusionRate));
 						chosenCell.getState().setNextState(FOOD_PHEROMONE_STATE);

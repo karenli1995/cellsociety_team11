@@ -2,14 +2,15 @@ package gui.dialogue;
 
 public class AntDialog extends Dialog {
 	public AntDialog() {
-		super("Fire Spreading");
+		super("AntModel");
 	}
 
 	@Override
 	protected void addTexts() {
 		super.addTexts();
-		addTextField("numBurning", "Num of Burning Cells:", "0", "Num of Burning Cells", "Cannot exceed width*height");
-		addTextField("probCatchFire", "Probability of Catching Fire:", "0.5", "Probability of Catching Fire", "Double between 0 and 1");
+		addTextField("percentAnts", "Percent of Ants:", "0.2", "Percent of Ants", "Double between 0 and 1");
+		addTextField("evapRate", "Evaporation Rate:", "0.25", "Evaporation Rate", "Double between 0 and 1");
+		addTextField("diffusionRate", "Diffusion Rate:", "0.25", "Diffusion Rate", "Double between 0 and 1");
 	};
 
 	@Override
@@ -17,11 +18,14 @@ public class AntDialog extends Dialog {
 		try {
 			int width = Integer.parseInt(myTexts.get("width").getText().trim());
 			int height = Integer.parseInt(myTexts.get("height").getText().trim());
-			int numBurning = Integer.parseInt(myTexts.get("numBurning").getText().trim());
-			double probCatchFire = Double.parseDouble(myTexts.get("probCatchFire").getText().trim());
+			double percentAnts = Integer.parseInt(myTexts.get("percentAnts").getText().trim());
+			double evapRate = Double.parseDouble(myTexts.get("evapRate").getText().trim());
+			double diffusionRate = Double.parseDouble(myTexts.get("diffusionRate").getText().trim());
+
 			return width <= 100 && width > 0 && height <= 100 && height > 0 
-					&& numBurning>=0 && numBurning <= width*height
-					&& probCatchFire <= 1 && probCatchFire >= 0;
+					&& percentAnts>=0 && percentAnts <= 1
+					&& evapRate>=0 && evapRate <= 1
+					&& diffusionRate <= 1 && diffusionRate >= 0;
 		} catch (Exception e) {
 			return false;
 		}
@@ -30,7 +34,7 @@ public class AntDialog extends Dialog {
 
 	@Override
 	protected String getName() {
-		return "FireModel";
+		return "AntModel";
 	}
 
 }

@@ -14,7 +14,7 @@ public class AntState extends State{
 	private boolean containsAnt;
 	
 
-	AntState(int state) {  
+	public AntState(int state) {  
 		super(state);
 	
 		Color[] colors = {Color.WHITE, Color.PURPLE, Color.YELLOW, Color.RED, Color.GREEN, Color.BLACK}; //0=empty; 1=nest; 2=food source; 3=home pheromone; 4=food pheromone; 5=ant
