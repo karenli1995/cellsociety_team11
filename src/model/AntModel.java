@@ -26,16 +26,11 @@ public class AntModel extends AbstractModel{
 
 	AntModel(CellSocietyGUI CSGUI) {
 		super(CSGUI);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void setParameters(Map<String,String> parameters){
 		super.setParameters(parameters);
-//		if(parameters.containsKey("evapRate"))
-//			myEvaporationRate = Double.parseDouble(parameters.get("evapRate"));
-//		if(parameters.containsKey("diffusionRate"))
-//			myDiffusionRate = Double.parseDouble(parameters.get("diffusionRate"));
 	}
 	
 	@Override
@@ -81,7 +76,7 @@ public class AntModel extends AbstractModel{
 		int mat[][] = new int[getWidth()][getHeight()];
 		int total = getWidth()*getHeight();
 		
-		double pA = 0.15;
+		double pA = 0.1;
 		if(myParameters.containsKey("percentAnts")){
 			double tmp = Double.parseDouble(myParameters.get("percentAnts"));
 			pA = (tmp>=0 && tmp<=1)?tmp:pA;	
@@ -99,27 +94,45 @@ public class AntModel extends AbstractModel{
 	
 		int t = myRandom.nextInt(total);
 		int x = t % getWidth(), y = t / getWidth();
+		System.out.println(x + " hi");
 		if(mat[x][y]==EMPTY_STATE){
 			mat[x][y] = NEST_STATE;
 		}
 		
 		int i=0;
 		while(i < numAnts){
+			
 			for(int p=0; p<=nestWidth; p++){
 				if ((x+p) < getWidth()){
 					if(mat[x+p][y]==EMPTY_STATE){
 						mat[x+p][y] = NEST_STATE;
+						i++;
 					}
 				} else {
 					break;
 				}
 			}
 			x = t % getWidth();
-			if (y < getHeight()) y++;
-			else break;
+			if (y < getHeight()-1){y++;}
+			else{ break;}
 		}
 		
-
+		
+		double percentFood = 0.1;
+		int numFood = (int) (total*percentFood);
+		
+		int j = 0;
+		while(j < numFood){
+			int t1 = myRandom.nextInt(total);
+			int x1 = t1 % getWidth(), y1 = t1 / getWidth();
+			if(mat[x1][y1]==EMPTY_STATE){
+				mat[x1][y1] = FOOD_SOURCE_STATE;
+				j++;
+			}
+		}
+		
+		
+		
 
 		for (int x1 = 0; x1 < mat.length; x1++)
 			for (int y1 = 0; y1 < mat[x1].length; y1++)

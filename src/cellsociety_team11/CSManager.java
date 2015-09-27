@@ -81,7 +81,6 @@ public class CSManager {
 		if (model != null) {
 			model.initialize(map);
 			if(model.getCells()!=null){
-				System.out.println("you");
 				myModel=model;
 				myModelConfigMap = map; //store the map for future reset()
 				return true;

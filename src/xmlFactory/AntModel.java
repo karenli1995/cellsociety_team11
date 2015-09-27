@@ -34,7 +34,6 @@ public class AntModel extends Model {
 		addModelParameter("diffusionRate", diffusionRate);
 	}
 
-	//figure out fillCells and GetCells
 	private void fillCells(int[][] mat, int limit, int state){
 		Random rand = new Random(System.currentTimeMillis());
 		int total = mat.length*mat[0].length;
@@ -49,17 +48,37 @@ public class AntModel extends Model {
 		}
 		
 		int i=0;
-		while(i < numAnts){
+		while(i < limit){
+			
 			for(int p=0; p<=nestWidth; p++){
+
 				if ((x+p) < getWidth()){
 					if(mat[x+p][y]==EMPTY_STATE){
 						mat[x+p][y] = NEST_STATE;
+						i++;
 					}
+				} else {
+					break;
 				}
 			}
 			x = t % getWidth();
-			if (y < getHeight()) y++;
-			else break;
+			if (y < getHeight()-1){y++;}
+			else{ break;}
+		}
+		
+		
+		
+		double percentFood = 0.1;
+		int numFood = (int) (total*percentFood);
+		
+		int j = 0;
+		while(j < numFood){
+			int t1 = rand.nextInt(total);
+			int x1 = t1 % getWidth(), y1 = t1 / getWidth();
+			if(mat[x1][y1]==EMPTY_STATE){
+				mat[x1][y1] = FOOD_SOURCE_STATE;
+				j++;
+			}
 		}
 		
 	}
@@ -76,7 +95,6 @@ public class AntModel extends Model {
 				list.add(createCell(x, y, mat[x][y]));
 			}
 		}
-		System.out.println(list + " lil");
 		return list;
 	}
 

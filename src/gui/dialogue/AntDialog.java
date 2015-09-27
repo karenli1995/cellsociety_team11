@@ -8,7 +8,7 @@ public class AntDialog extends Dialog {
 	@Override
 	protected void addTexts() {
 		super.addTexts();
-		addTextField("percentAnts", "Percent of Ants:", "0.2", "Percent of Ants", "Double between 0 and 1");
+		addTextField("percentAnts", "Percent of Ants:", "0.1", "Percent of Ants", "Double between 0 and 1");
 		addTextField("evapRate", "Evaporation Rate:", "0.25", "Evaporation Rate", "Double between 0 and 1");
 		addTextField("diffusionRate", "Diffusion Rate:", "0.25", "Diffusion Rate", "Double between 0 and 1");
 	};

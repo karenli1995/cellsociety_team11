@@ -265,14 +265,12 @@ public class CellSocietyGUI {
 		dialog.showAndWait().ifPresent(map -> {
 			try {
 				if (myManager.loadModelConfig(map)) {
-					System.out.println("fdsdfd");
 
 					myButtons.get("Start").setDisable(false);
 					myButtons.get("Reset").setDisable(false);
 					myButtons.get("Step").setDisable(false);
 				}
 			} catch (Exception e) {
-				System.out.println("FJDKLS");
 				showError("Error!","Failed to load given configuration.",e);
 			}
 		});

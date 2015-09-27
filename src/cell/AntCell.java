@@ -3,8 +3,10 @@ package cell;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import gui.CellSocietyGUI;
+import gui.SquareCellGUI;
 import location.Location;
 import state.AntState;
 import state.State;
@@ -21,7 +23,7 @@ public class AntCell extends AbstractCell{
 	
 	private static final int ANT_STATE = 5;
 	
-	private static final int NUM_STATES = 3;
+	private static final int NUM_STATES = 6;
 	
 	AntState myAntState;
 	
@@ -40,6 +42,10 @@ public class AntCell extends AbstractCell{
 		myHomePheromone = 0;
 		
 		myHasFoodItem = false;
+		
+		myCellGUI = new SquareCellGUI(CSGUI, l);
+		myCellGUI.updateState(s);
+		addClickListener();
 	}
 	
 	public void setParameters(double evaporationRate, double diffusionRate){
@@ -76,34 +82,52 @@ public class AntCell extends AbstractCell{
 	@Override
 	public void determineNextState() {
 		//evaporation
-		double foodPheromoneAfterEvap = this.getMyFoodPheromone() - (this.getMyFoodPheromone()*myEvaporationRate);
-		if(foodPheromoneAfterEvap > 0){
-			this.setMyFoodPheromone(foodPheromoneAfterEvap);
-		}else{
-			this.setMyFoodPheromone(0);
-			this.getState().setNextState(EMPTY_STATE);
-		}
-		
-		double homePheromoneAfterEvap = this.getMyHomePheromone() - (this.getMyHomePheromone()*myEvaporationRate);
-		if(homePheromoneAfterEvap > 0){
-			this.setMyFoodPheromone(homePheromoneAfterEvap);
-		}else{
-			this.setMyHomePheromone(0);
-			this.getState().setNextState(EMPTY_STATE);
-		}
-		
+//		double foodPheromoneAfterEvap = this.getMyFoodPheromone() - (this.getMyFoodPheromone()*myEvaporationRate);
+//		if(foodPheromoneAfterEvap > 0){
+//			this.setMyFoodPheromone(foodPheromoneAfterEvap);
+//			this.getState().setNextState(FOOD_PHEROMONE_STATE);
+//		}else{
+//			if(this.getState().getStateInt() != FOOD_SOURCE_STATE){
+//				this.getState().setNextState(EMPTY_STATE);
+//				this.setMyFoodPheromone(0);
+//			}
+//		}
+//		
+//		double homePheromoneAfterEvap = this.getMyHomePheromone() - (this.getMyHomePheromone()*myEvaporationRate);
+//		if(homePheromoneAfterEvap > 0){
+//			this.setMyFoodPheromone(homePheromoneAfterEvap);
+//			this.getState().setNextState(HOME_PHEROMONE_STATE);
+//		}else{
+//			if(this.getState().getStateInt() != FOOD_SOURCE_STATE){
+//				this.getState().setNextState(EMPTY_STATE);
+//				this.setMyHomePheromone(0);
+//			}
+//		}
+//		
 		
 		if(this.getMyHasFoodItem() == false){
+			System.out.println("time");
 			antFindFoodSource();	
 		}else{
+			System.out.println("te");
+
 			antReturnToNest();
 		}
 	}
 
 	
 	private void antFindFoodSource(){
-		if(myAntState.getStateInt() == NEST_STATE && myAntState.getContainsAnt() == true){
-			ArrayList<Cell> neighbors = (ArrayList<Cell>) this.getNeighborCells();
+		ArrayList<Cell> neighbors = (ArrayList<Cell>) this.getNeighborCells();
+		//ArrayList<Cell> emptyNeighbors = (ArrayList<Cell>) this.getNeighborsInStateInt(EMPTY_STATE);
+		
+//		if(myAntState.getStateInt() == NEST_STATE && myAntState.getContainsAnt() == true){
+//			Random r = new Random();
+//			AntCell chosenCell = (AntCell) emptyNeighbors.get(r.nextInt(neighbors.size()-1));
+//			AntState chosenCellState = (AntState) chosenCell.getState();
+//			chosenCellState.setNextState(ANT_STATE);
+//			chosenCellState.setContainsAnt(true);
+//		}else
+		if(myAntState.getContainsAnt() == true){
 
 			double maxPheromone=0;
 			AntCell chosenCellMaxPheromone = this;
@@ -115,12 +139,10 @@ public class AntCell extends AbstractCell{
 					chosenCellMaxPheromone = chosenCell;
 				}
 			}
+			
+			System.out.println("fdjkls " + maxPheromone);
 			if(maxPheromone > 0){
-				//drop home pheromones on current state
-				//dropHomePheromones(chosenCellMaxPheromone, neighbors);
-				dropPheromones(chosenCellMaxPheromone, neighbors, NEST_STATE);
-				chosenCellMaxPheromone.getState().setNextState(ANT_STATE);
-				
+				dropPheromones(this, neighbors, NEST_STATE);
 				
 				AntState prevCellState = (AntState) this.getState();
 				prevCellState.setNextState(HOME_PHEROMONE_STATE);  //check this
@@ -135,17 +157,48 @@ public class AntCell extends AbstractCell{
 					//return to nest
 				}
 			}else{
-				this.getState().setNextState(myAntState.getStateInt());
-				AntCell chosenCell = (AntCell) neighbors.get(0);
-				AntState chosenCellState = (AntState) chosenCell.getState();
-				chosenCellState.setNextState(ANT_STATE);
-				chosenCellState.setContainsAnt(true);
+				AntState myPrevState = (AntState) this.getState();
+				if(myPrevState.getStateInt() != NEST_STATE){
+					myPrevState.setNextState(EMPTY_STATE); 
+					Random r = new Random();
+					AntCell chosenCell = (AntCell) neighbors.get(r.nextInt(neighbors.size()-1));
+					AntState chosenCellState = (AntState) chosenCell.getState();
+					
+					if(chosenCellState.getStateInt() == FOOD_SOURCE_STATE){
+						chosenCellState.setNextState(EMPTY_STATE);
+						
+						dropPheromones(chosenCell, neighbors, FOOD_SOURCE_STATE);
+						chosenCell.setMyHasFoodItem(true);
+					}
+					
+					chosenCellState.setNextState(ANT_STATE);
+					chosenCellState.setContainsAnt(true);
+					
+				}else{
+					myPrevState.setNextState(NEST_STATE); 
+				}
+				myPrevState.setContainsAnt(false);
+				
+//				Random r = new Random();
+//				AntCell chosenCell = (AntCell) neighbors.get(r.nextInt(neighbors.size()-1));
+//				AntState chosenCellState = (AntState) chosenCell.getState();
+//				
+//				if(chosenCellState.getStateInt() == FOOD_SOURCE_STATE){
+//					chosenCellState.setNextState(EMPTY_STATE);
+//					
+//					dropPheromones(chosenCell, neighbors, FOOD_SOURCE_STATE);
+//					chosenCell.setMyHasFoodItem(true);
+//				}
+//				
+//				chosenCellState.setNextState(ANT_STATE);
+//				chosenCellState.setContainsAnt(true);
+				
 			}
 		}
 	}
 	
 	private void antReturnToNest(){
-		if(myAntState.getStateInt() == FOOD_SOURCE_STATE && myAntState.getContainsAnt() == true){
+		if(myAntState.getContainsAnt() == true){
 			ArrayList<Cell> neighbors = (ArrayList<Cell>) this.getNeighborCells();
 
 			double maxPheromone=0;
@@ -159,8 +212,6 @@ public class AntCell extends AbstractCell{
 				}
 			}
 			if(maxPheromone > 0){
-				//drop food pheromones on current state
-				//dropFoodPheromones(chosenCellMaxPheromone, neighbors);
 				dropPheromones(chosenCellMaxPheromone, neighbors, FOOD_SOURCE_STATE);				
 
 				AntState prevCellState = (AntState) this.getState();
@@ -171,110 +222,82 @@ public class AntCell extends AbstractCell{
 				chosenCellState.setNextState(ANT_STATE);
 				chosenCellState.setContainsAnt(true);
 				if(chosenCellState.getStateInt() == NEST_STATE){
-					//drop food item
 					chosenCellMaxPheromone.setMyHasFoodItem(false);
-					//return back to find food
 				}
 			}else{
-				this.getState().setNextState(myAntState.getStateInt());
-				AntCell chosenCell = (AntCell) neighbors.get(0);
+				AntState myPrevState = (AntState) this.getState();
+				if(this.getState().getStateInt() != NEST_STATE){
+					myPrevState.setNextState(EMPTY_STATE); //or nest state
+				}else{
+					myPrevState.setNextState(NEST_STATE); //or nest state
+				}
+				myPrevState.setContainsAnt(false);
+				
+				Random r = new Random();
+				AntCell chosenCell = (AntCell) neighbors.get(r.nextInt(neighbors.size()-1));
 				AntState chosenCellState = (AntState) chosenCell.getState();
-				chosenCellState.setNextState(ANT_STATE);
+				
+				if(chosenCellState.getStateInt() == NEST_STATE){
+					dropPheromones(chosenCell, neighbors, NEST_STATE);
+					this.setMyHasFoodItem(false);
+				}
+				
 				chosenCellState.setContainsAnt(true);
+				
 			}
 		}
 	}
 	
 	
 	
-	public void dropPheromones(AntCell maxPheromoneCell, ArrayList<Cell> neighbors, int state){
-		if(myAntState.getContainsAnt() == true && myAntState.getStateInt() == state){
+	public void dropPheromones(AntCell cell, ArrayList<Cell> neighbors, int state){
+		AntState antState = (AntState) cell.getState();
+		if(antState.getContainsAnt() == true && antState.getStateInt() == state){
 			if(state == NEST_STATE) setMyHomePheromone(MAX_HOME_PHEROMONE);
 			else setMyFoodPheromone(MAX_FOOD_PHEROMONE);
 		}else{
 			if(state == NEST_STATE){ 
-				double maxHomePheromones = maxPheromoneCell.getMyHomePheromone();
+				double maxHomePheromones = cell.getMyHomePheromone();
 				double des = maxHomePheromones-2;
 				double d = des - this.getMyHomePheromone();
+				System.out.println("dell " + d);
 				if(d > 0){
 					this.setMyHomePheromone(getMyHomePheromone() + d);
+					this.getState().setNextState(HOME_PHEROMONE_STATE);
 					
 					//diffusion -- might want to check if this works correctly
-					for(int i=0; i<neighbors.size(); i++) {
-						AntCell chosenCell = (AntCell) neighbors.get(i);
-						double chosenHomePheromone = chosenCell.getMyHomePheromone();
-						
-						chosenCell.setMyHomePheromone(chosenHomePheromone + (d * myDiffusionRate));
-						chosenCell.getState().setNextState(HOME_PHEROMONE_STATE);
-					}
+//					for(int i=0; i<neighbors.size(); i++) {
+//						AntCell chosenCell = (AntCell) neighbors.get(i);
+//						double chosenHomePheromone = chosenCell.getMyHomePheromone();
+//						
+//						chosenCell.setMyHomePheromone(chosenHomePheromone + (d * myDiffusionRate));
+//						chosenCell.getState().setNextState(HOME_PHEROMONE_STATE);
+//					}
 				}
 				
 			}else{
-				double maxFoodPheromones = maxPheromoneCell.getMyFoodPheromone();
+				double maxFoodPheromones = cell.getMyFoodPheromone();
 				double des = maxFoodPheromones-2;
 				double d = des - this.getMyFoodPheromone();
+				System.out.println("yell " + d);
+
 				if(d > 0){
 					this.setMyFoodPheromone(getMyFoodPheromone() + d);
+					this.getState().setNextState(FOOD_PHEROMONE_STATE);
 					
 					//diffusion -- might want to check if this works correctly
-					for(int i=0; i<neighbors.size(); i++) {
-						AntCell chosenCell = (AntCell) neighbors.get(i);
-						double chosenFoodPheromone = chosenCell.getMyFoodPheromone();
-						
-						chosenCell.setMyFoodPheromone(chosenFoodPheromone + (d * myDiffusionRate));
-						chosenCell.getState().setNextState(FOOD_PHEROMONE_STATE);
-					}
+//					for(int i=0; i<neighbors.size(); i++) {
+//						AntCell chosenCell = (AntCell) neighbors.get(i);
+//						double chosenFoodPheromone = chosenCell.getMyFoodPheromone();
+//						
+//						chosenCell.setMyFoodPheromone(chosenFoodPheromone + (d * myDiffusionRate));
+//						chosenCell.getState().setNextState(FOOD_PHEROMONE_STATE);
+//					}
 					
 				}
 			}
 			
 		}
 	}
-	
-	
-//	public void dropHomePheromones(AntCell maxPheromoneCell, ArrayList<Cell> neighbors){
-//		if(myAntState.getContainsAnt() == true && myAntState.getStateInt() == NEST_STATE){
-//			setMyHomePheromone(MAX_HOME_PHEROMONE);
-//		}else{
-//			int maxHomePheromones = maxPheromoneCell.getMyHomePheromone();
-//			int des = maxHomePheromones-2;
-//			int d = des - this.getMyHomePheromone();
-//			if(d > 0){
-//				this.setMyHomePheromone(d);
-//				
-//				//diffusion -- might want to check if this works correctly
-//				for(int i=0; i<neighbors.size(); i++) {
-//					AntCell chosenCell = (AntCell) neighbors.get(i);
-//					int chosenHomePheromone = chosenCell.getMyHomePheromone();
-//					
-//					chosenCell.setMyHomePheromone(chosenHomePheromone + (d * myDiffusionRate));
-//					chosenCell.getState().setNextState(HOME_PHEROMONE_STATE);
-//				}
-//			}
-//		}
-//	}
-//	
-//	public void dropFoodPheromones(AntCell maxPheromoneCell, ArrayList<Cell> neighbors){
-//		if(myAntState.getContainsAnt() == true && myAntState.getStateInt() == FOOD_SOURCE_STATE){
-//			setMyFoodPheromone(MAX_FOOD_PHEROMONE);
-//		}else{
-//			int maxFoodPheromones = maxPheromoneCell.getMyFoodPheromone();
-//			int des = maxFoodPheromones-2;
-//			int d = des - this.getMyFoodPheromone();
-//			if(d > 0){
-//				this.setMyFoodPheromone(d);
-//				
-//				//diffusion -- might want to check if this works correctly
-//				for(int i=0; i<neighbors.size(); i++) {
-//					AntCell chosenCell = (AntCell) neighbors.get(i);
-//					int chosenFoodPheromone = chosenCell.getMyFoodPheromone();
-//					
-//					chosenCell.setMyFoodPheromone(chosenFoodPheromone + (d * myDiffusionRate));
-//					chosenCell.getState().setNextState(FOOD_PHEROMONE_STATE);
-//				}
-//				
-//			}
-//		}
-//	}
 
 }
