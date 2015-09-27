@@ -145,7 +145,7 @@ public class AntModel extends AbstractModel{
 
 	@Override
 	protected Map<Integer, Double> getDataPoints() {
-		int[] states = new int[2];
+		int[] states = new int[6];
 		myCells.forEach(cell->{states[cell.getState().getStateInt()]++;});
 		Map<Integer, Double> stateMap = new HashMap<>();
 		stateMap.put(EMPTY_STATE, (double)states[EMPTY_STATE]);
@@ -153,6 +153,7 @@ public class AntModel extends AbstractModel{
 		stateMap.put(FOOD_SOURCE_STATE, (double)states[FOOD_SOURCE_STATE]);
 		stateMap.put(HOME_PHEROMONE_STATE, (double)states[HOME_PHEROMONE_STATE]);
 		stateMap.put(FOOD_PHEROMONE_STATE, (double)states[FOOD_PHEROMONE_STATE]);
+		stateMap.put(ANT_STATE, (double)states[ANT_STATE]);
 
 		return stateMap;
 	}
