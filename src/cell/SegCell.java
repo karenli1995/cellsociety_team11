@@ -31,10 +31,16 @@ public class SegCell extends AbstractCell {
 		mySimilarity = similarity;
 	}
 
+        /**
+         * Determine the next state for the cell to go to
+         */
 	@Override
 	public void determineNextState() {
 	}
 	
+        /**
+         * Determine the next state for the cell to go to
+         */
 	public void determineNextState(State s){
 		myState.setNextState(s.getStateInt());
 	}

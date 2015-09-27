@@ -34,6 +34,10 @@ public interface Cell {
 	 */
 	public void setNeighborCells(List<Cell> neighbors);
 	
+	/**
+	 * Get the neighboring cells
+	 * @return A List of the neighbor cells
+	 */
 	public List<Cell> getNeighborCells();
 	
 	/**
@@ -52,10 +56,19 @@ public interface Cell {
 	 */
 	public void remove();
 
+	/**
+	 * Increment to the next state
+	 */
 	public void incrementState();
 
+	/**
+	 * Add outlines to the cell
+	 */
 	public void removeOutlines();
 
+	/**
+	 * Remove outlines from the cell
+	 */
 	public void addOutlines();
 	
 	public Map<String,String> getAttributes();

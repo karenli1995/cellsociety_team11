@@ -14,6 +14,9 @@ public class SquareGrid extends Grid {
 		super(width, height, cells);
 	}
 	
+	/**
+	 * Returns a List of adjacent locations to the specified location
+	 */
 	@Override
 	public List<Location> getAdjacentLoc(Location loc) {
 		int[] x = {-1,-1,-1, 0, 0, 1, 1, 1};

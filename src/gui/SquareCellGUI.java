@@ -20,6 +20,11 @@ public class SquareCellGUI extends CellGUI {
 		addShapeToScreen();
 	}
 	
+	/**
+	 * Draw the rectangle on the screen
+	 * @param loc The location of the cell
+	 * @return The rectangle
+	 */
 	private Rectangle createRectangle(Location loc) {
 		Rectangle rect = new Rectangle();
 		rect.setWidth(myCellWidth);
@@ -31,6 +36,9 @@ public class SquareCellGUI extends CellGUI {
 		return rect;
 	}
 
+	/**
+	 * Draw a circle on the screen in the middle of the rectangle
+	 */
 	@Override
 	public void drawCircle(Color color) {
 		myCircle = new Circle();

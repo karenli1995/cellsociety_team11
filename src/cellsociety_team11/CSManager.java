@@ -23,11 +23,18 @@ public class CSManager {
 		myWriter = new XmlWriter();
 	}
 	
+	/**
+	 * Step to the next frame in the animation
+	 */
 	public void step(){
 		if(myModel!=null)
 			myModel.step();
 	}
 	
+	/**
+	 * Reset the grid to it's original state with the current xml
+	 * @return True if createModel succeeded
+	 */
 	public boolean reset(){
 		clear();
 		if(myModelConfigMap == null)
@@ -41,6 +48,12 @@ public class CSManager {
 		}
 	}
 	
+	/**
+	 * Save an XML file to the speficied directory
+	 * @param dir The directory to save in
+	 * @return The name of the xml file saved
+	 * @throws Exception
+	 */
 	public String save(File dir) throws Exception{
 		if(!dir.isDirectory() || !dir.canWrite()){
 			throw new IOException("Current working dir is not writable.");

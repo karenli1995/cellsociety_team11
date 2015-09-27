@@ -28,26 +28,52 @@ public abstract class Grid {
 		cells.forEach(cell->{myCells.put(cell.getLocation(), cell);});
 	}
 	
+	/**
+	 * Get the number of rows in the grid
+	 * @return
+	 */
 	public int getHeight() {
 		return myHeight;
 	}
 
+	/**
+	 * Get the number of columns in the grid
+	 * @return
+	 */
 	public int getWidth() {
 		return myWidth;
 	}
 	
+	/**
+	 * Get the cell at the specified location
+	 * @param loc a location in the grid
+	 * @return The cell at that location
+	 */
 	public Cell getCell(Location loc){
 		return myCells.get(loc);
 	}
-
+	
+	/**
+	 * Set the neighbors for each cell
+	 */
 	public void setNeighbors() {
 		myCells.forEach((loc,cell)->{
 			cell.setNeighborCells(getAdjacentCells(cell));
 		});
 	}
 
+	/**
+	 * Get the locations adjacent to the specified location
+	 * @param loc The location
+	 * @return A List of adjacent locations
+	 */
 	public abstract List<Location> getAdjacentLoc(Location loc);
 
+	/**
+	 * Get cells adjacent to the specified cell
+	 * @param cell The cell
+	 * @return A List of the adjacent cells
+	 */
 	public List<Cell> getAdjacentCells(Cell cell) {
 		List<Cell> neighbors = new ArrayList<>();
 		getAdjacentLoc(cell.getLocation()).forEach(loc->{
@@ -56,35 +82,53 @@ public abstract class Grid {
 		return neighbors;
 	}
 	
+	/**
+	 * Step each cell to it's next state
+	 */
 	public void step() {
 		determineNextStates();
 		goToNextStates();
 	}
 	
+	/**
+	 * Determine the next state of each cell in the grid
+	 */
 	private void determineNextStates() {
 		for (Cell c : myCells.values()) {
 			c.determineNextState();
 		}
 	}
 	
+	/**
+	 * Go to the next state in each cell
+	 */
 	private void goToNextStates() {
 		for (Cell c : myCells.values()) {
 			c.goToNextState();
 		}
 	}
 	
+	/**
+	 * Clear the cells out of the grid
+	 */
 	public void clear() {
 		for (Cell c : myCells.values()) {
 			c.remove();
 		}
 	}
 	
+	/**
+	 * Remove outlines from all cells
+	 */
 	public void removeOutlines() {
 		for (Cell c : myCells.values()) {
 			c.removeOutlines();
 		}
 	}
 	
+	/**
+	 * Add outlines to all cells
+	 */
 	public void addOutlines() {
 		for (Cell c : myCells.values()) {
 			c.addOutlines();

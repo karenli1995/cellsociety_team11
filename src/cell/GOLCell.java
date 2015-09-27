@@ -25,6 +25,9 @@ public class GOLCell extends AbstractCell{
 		addClickListener();
 	}
 	
+	/**
+	 * Determine the next state for the cell to go to
+	 */
 	@Override
 	public void determineNextState() { // This should be split up into smaller functions.
 		int numLiveNeighbors = getNeighborsInState(new GOLState(LIVE_STATE)).size();

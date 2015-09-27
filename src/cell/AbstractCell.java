@@ -32,39 +32,69 @@ public abstract class AbstractCell implements Cell{
 		myCSGUI = CSGUI;
 	}
 	
+	/**
+	 * Associates a click listener with the current cell
+	 */
 	protected void addClickListener() {
 		myCellGUI.addClickListener(e->incrementState());
 	}
 
+	/**
+	 * Return the current state
+	 */
 	public State getState() {
 		return myState;
 	}
 
+	/**
+	 * Return true if the cell is in the specified state
+	 */
 	public boolean isInState(State s) {
 		return getState().equals(s);
 	}
 
+	/**
+	 * Returns true if the cell has the specified state int
+	 * @param s
+	 * @return
+	 */
 	protected boolean isInState(int s) {
 		return getState().getStateInt() == s;
 	}
 
+	/**
+	 * Set the current state to the specified state
+	 */
 	public void setState(State s) {
 		myState = s;
 	}
 
+	/**
+	 * Return the cell's location
+	 */
 	public Location getLocation() {
 		return myLoc;
 	}
 
-	
+	/**
+	 * Set the cell's neighbors
+	 */
 	public void setNeighborCells(List<Cell> neighbors) {
 		myNeighborCells = neighbors;
 	}
 	
+	/**
+	 * Returns the cell's neighbors
+	 */
 	public List<Cell> getNeighborCells() {
 		return myNeighborCells;
 	}
 
+	/**
+	 * Determines which neighbors are in the specified state and returns them
+	 * @param s The state
+	 * @return List of the neighbors in that state
+	 */
 	protected List<Cell> getNeighborsInState(State s) {
 		List<Cell> neighbors = new ArrayList<>();
 		myNeighborCells.forEach(cell -> {
@@ -74,6 +104,11 @@ public abstract class AbstractCell implements Cell{
 		return neighbors;
 	}
 	
+	/**
+	 * Get neighbors which have the specified state int
+	 * @param stateInt The state int to check
+	 * @return The neighbors in that state
+	 */
 	protected List<Cell> getNeighborsInStateInt(int stateInt) {
 		List<Cell> neighbors = new ArrayList<>();
 		myNeighborCells.forEach(cell->{
@@ -83,17 +118,29 @@ public abstract class AbstractCell implements Cell{
 		return neighbors;
 	}
 	
+	/**
+	 * Use the cell-specific logic to determine the next state
+	 */
 	public abstract void determineNextState();
 
+	/**
+	 * Go to the state that had previously been determined
+	 */
 	public void goToNextState() {
 		myState.goToNextState();
 		myCellGUI.updateState(myState);
 	}
 
+	/**
+	 * Remove the cell
+	 */
 	public final void remove(){
 		myCellGUI.remove();
 	}
 
+	/**
+	 * Increment the state to the next state in order
+	 */
 	public void incrementState() {
 		int nextState = (myState.getStateInt() + 1) % myNumStates;
 		myState.setNextState(nextState);
@@ -101,13 +148,20 @@ public abstract class AbstractCell implements Cell{
 		myCellGUI.updateState(myState);
 	}
 
+	/**
+	 * remove the cell's outlines
+	 */
 	public void removeOutlines() {
 		myCellGUI.removeOutlines();
 	}
 
+	/**
+	 * Add outlines to the cell
+	 */
 	public void addOutlines() {
 		myCellGUI.addOutlines();
 	}
+	
 	@Override
 	public final Map<String, String> getAttributes() {
 		Map<String,String> map = new HashMap<>();

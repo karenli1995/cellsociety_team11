@@ -90,6 +90,10 @@ public class CellSocietyGUI {
 		
 	}
 	
+	/**
+	 * Get a list of buttons
+	 * @return
+	 */
 	protected Map<String, Button> getReadOnlyButtons(){
 		return Collections.unmodifiableMap(myButtons);
 	}
@@ -370,6 +374,11 @@ public class CellSocietyGUI {
 		return slider;
 	}
 
+	/**
+	 * Show the label associated with the slider
+	 * @param text The text to set the label to
+	 * @param yIndex The index from the top of the page of the text
+	 */
 	public void showSliderLabel(String text, double yIndex) {
 		mySliderLabel = new Label();
 		myRoot.getChildren().add(mySliderLabel);
@@ -378,6 +387,10 @@ public class CellSocietyGUI {
 		updateSliderLabel(text);
 	}
 
+	/**
+	 * Updates the text of the slider label
+	 * @param text The text to set the label to
+	 */
 	public void updateSliderLabel(String text) {
 		mySliderLabel.setText(text);
 		mySliderLabel.applyCss();
@@ -386,6 +399,9 @@ public class CellSocietyGUI {
 		mySliderLabel.setLayoutX(xPos);
 	}
 
+	/**
+	 * Add a graph to the button area of the screen
+	 */
 	public void addGraph() {
 		// defining the axes
 		final NumberAxis xAxis = new NumberAxis("Frame Number", 0, GRAPH_X_RANGE, 50);
@@ -404,6 +420,11 @@ public class CellSocietyGUI {
 		addToScreen(myLineChart);
 	}
 
+	/**
+	 * Add a series to the graph
+	 * @param index The series index
+	 * @param name The name of the series
+	 */
 	public void addSeries(int index, String name) {
 		XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
 		series.setName(name);
@@ -412,6 +433,9 @@ public class CellSocietyGUI {
 		mySeriesMap.put(index, series);
 	}
 
+	/**
+	 * Reset the graph and remove all lines and series
+	 */
 	public void resetGraph() {
 		myLineChart.getData().clear();
 		if(!GRAPH_AUTO_RANGE){
@@ -421,6 +445,12 @@ public class CellSocietyGUI {
 		}
 	}
 
+	/**
+	 * Add a data point to the graph
+	 * @param xVal The x value of the point
+	 * @param yVal The y value of the point
+	 * @param seriesNum The series number to set the point to
+	 */
 	public void addDataPoint(Number xVal, Number yVal, int seriesNum) {
 		ObservableList<Data<Number, Number>> list = mySeriesMap.get(seriesNum).getData();
 		list.add(new XYChart.Data<Number, Number>(xVal, yVal));
@@ -431,6 +461,9 @@ public class CellSocietyGUI {
 		}
 	}
 
+	/**
+	 * Create the grid area and add it to the screen
+	 */
 	public void createGridArea() {
 		Rectangle rect = new Rectangle();
 		rect.setX(GRID_MARGIN);
@@ -443,18 +476,34 @@ public class CellSocietyGUI {
 		addToScreen(rect);
 	}
 
+	/**
+	 * Get the width of the screen
+	 * @return The width
+	 */
 	public double getGridWidth() {
 		return myWindowWidth - GRID_MARGIN * 2 - BUTTON_AREA_WIDTH;
 	}
 
+	/**
+	 * Get the height of the grid
+	 * @return The height
+	 */
 	public double getGridHeight() {
 		return myWindowHeight - GRID_MARGIN * 2;
 	}
 
+	/**
+	 * Get the x coordinate of the grid
+	 * @return
+	 */
 	public double getGridX() {
 		return GRID_MARGIN;
 	}
 
+	/**
+	 * Get the y coordinate of the grid
+	 * @return
+	 */
 	public double getGridY() {
 		return GRID_MARGIN;
 	}

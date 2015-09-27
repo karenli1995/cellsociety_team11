@@ -21,6 +21,11 @@ public class TriangleCellGUI extends CellGUI {
 		addShapeToScreen();
 	}
 	
+	/**
+	 * Create a triangle cell and add it to the screen
+	 * @param loc The location of the cell
+	 * @return The triangle
+	 */
 	private Polygon createTriangle(Location loc) {
 		Polygon tri = new Polygon();
 		double point1X = myGridXPos + ((loc.getX() + loc.getY() % 2) / 2) * myCellWidth + ((loc.getY() + 1) %2) * myCellWidth / 2;
@@ -43,20 +48,13 @@ public class TriangleCellGUI extends CellGUI {
 			    point1X, point1Y,
 			    point2X, point2Y,
 			    point3X, point3Y });
-		
-//		myShape = tri;
-//		addShapeToScreen();
 
-//		Label sliderLabel = new Label(loc.getX() + ", " + loc.getY());
-//		double lblPosX = pointingUp ? (point1X) : (point2X);
-//		double lblPosY = point1Y + myCellHeight / 2;
-//		sliderLabel.setLayoutX(myCenterX);
-//		sliderLabel.setLayoutY(myCenterY);
-//		myCSGUI.addToScreen(sliderLabel);
-		
 		return tri;
 	}
 
+	/**
+	 * Draw a circle in the middle of the triangle
+	 */
 	@Override
 	public void drawCircle(Color color) {
 		myCircle = new Circle();

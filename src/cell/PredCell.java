@@ -101,6 +101,9 @@ public class PredCell extends AbstractCell {
 		return true;
 	}
 
+	/**
+         * Determine the next state for the cell to go to
+         */
 	@Override
 	public void determineNextState() {
 		if (visited || isInState(EMPTY_STATE)) {

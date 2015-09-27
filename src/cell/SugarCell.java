@@ -68,6 +68,9 @@ public class SugarCell extends AbstractCell{
 		myAgentAmntSugar = sugar;
 	}
 	
+        /**
+         * Determine the next state for the cell to go to
+         */
 	@Override
 	public void determineNextState() {
 		if (myAgentState == AGENT_STATE) {
