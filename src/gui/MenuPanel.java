@@ -18,20 +18,20 @@ public class MenuPanel extends MenuBar {
 	private Menu fileMenu() {
 		Menu menu = new Menu("File");
 		
-		
-		MenuItem save = new MenuItem("Save XML");
-		save.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
-		save.setOnAction(e->{});
-		
 		MenuItem open = new MenuItem("Open XML");
 		open.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
 		open.setOnAction(e->{myGui.openXML();});
+		
+		MenuItem save = new MenuItem("Save XML");
+		save.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+		save.disableProperty().bind(myGui.getReadOnlyButtons().get("Step").disabledProperty());
+		save.setOnAction(e->{myGui.saveXML();});
 		
 		MenuItem exit = new MenuItem("Exit");
 		exit.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 		exit.setOnAction(e->{System.exit(0);});
 		
-		menu.getItems().addAll(save, open, new SeparatorMenuItem(), exit);
+		menu.getItems().addAll(open,save, new SeparatorMenuItem(), exit);
 		
 		return menu;
 	}

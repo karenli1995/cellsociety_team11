@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,20 +24,24 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class CellSocietyGUI {
 	private static final int XSIZE = 800;
 	private static final int YSIZE = 600;
-	private static final String[] BUTTON_NAMES = { "LoadXML", "Start", "Pause", "Reset", "Step", " fps" };
+	private static final String[] BUTTON_NAMES = { "Start", "Pause", "Reset", "Step", " fps" };
 	private static final int FRAMES_PER_SECOND = 10;
 	private static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 	private static final String TITLE = "Cell Society";
@@ -51,7 +57,7 @@ public class CellSocietyGUI {
 	private static final double MAX_FPS = 60;
 	private static final double INCREMENT = 0.5;
 
-	private Stage myStage;
+	protected Stage myStage;
 	private Scene myScene;
 	private Group myRoot;
 	private Timeline myAnimation;
@@ -88,6 +94,12 @@ public class CellSocietyGUI {
 		return Collections.unmodifiableMap(myButtons);
 	}
 
+	/**
+	 * Initialize the window
+	 * @param width The width of the window
+	 * @param height The height of the window
+	 * @return the Scene that was initialized
+	 */
 	private Scene init(int width, int height) {
 		myWindowWidth = width;
 		myWindowHeight = height;
@@ -96,26 +108,40 @@ public class CellSocietyGUI {
 		return myScene;
 	}
 
+	/**
+	 * Get the title of the application
+	 * @return The title
+	 */
 	public String getTitle() {
 		return TITLE;
 	}
 
-	public void addToScreen(Node e) {
-		myRoot.getChildren().add(e);
+	/**
+	 * Add a node to the window.
+	 * @param n The node
+	 */
+	public void addToScreen(Node n) {
+		myRoot.getChildren().add(n);
 	}
 
-	public void removeFromScreen(Node e) {
-		myRoot.getChildren().remove(e);
+	/**
+	 * Remove a node from the screen
+	 * @param n The node
+	 */
+	public void removeFromScreen(Node n) {
+		myRoot.getChildren().remove(n);
 	}
 
+	/**
+	 * Add the control buttons to the screen
+	 */
 	private void addButtons() {
 		myButtons = new HashMap<>(BUTTON_NAMES.length);
-		EventHandler<ActionEvent>[] events = new EventHandler[5];
-		events[0] = (e) -> openXML();
-		events[1] = (e) -> start();
-		events[2] = (e) -> pause();
-		events[3] = (e) -> reset();
-		events[4] = (e) -> step();
+		EventHandler<ActionEvent>[] events = new EventHandler[4];
+		events[0] = (e) -> start();
+		events[1] = (e) -> pause();
+		events[2] = (e) -> reset();
+		events[3] = (e) -> step();
 		int index;
 		for (index = 0; index < events.length; index++) {
 			Button button = createAndPlaceButton(BUTTON_NAMES[index], index, events[index]);
@@ -127,21 +153,96 @@ public class CellSocietyGUI {
 			changeTime(newValue.doubleValue());
 		});
 		showSliderLabel(FRAMES_PER_SECOND + BUTTON_NAMES[index], ++index);
-		myButtons.get("LoadXML").setDisable(false);
+		//myButtons.get("LoadXML").setDisable(false);
 	}
 
+	/**
+	 * Create the animation and timeline.
+	 */
 	private void createAnimation() {
 		KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> myManager.step());
 		myAnimation = new Timeline();
 		myAnimation.setCycleCount(Timeline.INDEFINITE);
 		myAnimation.getKeyFrames().add(frame);
 	}
+	
+	protected void saveXML(){
+		try{
+			String fileName = myManager.save(getDataDirectory());
+			showInfo("File saved successfully","File name: "+fileName);
+		}catch(Exception e){
+			showError("Save Exception","Failed to save current model as an XML",e);
+		}
+	}
+	
+	protected void showInfo(String header,String content){
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Information");
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
+	protected void showError(String header,String content){
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
+	protected void showError(String header,String content,Exception e){
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		
+		// Create expandable Exception.
+		Label label = new Label("The exception stacktrace was:");
+		StringWriter sw = new StringWriter();
+		e.printStackTrace(new PrintWriter(sw));
+		String exceptionText = sw.toString();
+		
+		TextArea textArea = new TextArea(exceptionText);
+		textArea.setEditable(false);
+		textArea.setWrapText(true);
+		
+		textArea.setMaxWidth(Double.MAX_VALUE);
+		textArea.setMaxHeight(Double.MAX_VALUE);
+		GridPane.setVgrow(textArea, Priority.ALWAYS);
+		GridPane.setHgrow(textArea, Priority.ALWAYS);
 
+		GridPane expContent = new GridPane();
+		expContent.setMaxWidth(Double.MAX_VALUE);
+		expContent.add(label, 0, 0);
+		expContent.add(textArea, 0, 1);
+
+		// Set expandable Exception into the dialog pane.
+		alert.getDialogPane().setExpandableContent(expContent);
+		alert.showAndWait();
+	}
+	
+	private File getDataDirectory(){
+		File file = new File(System.getProperty("user.dir")+"/data");
+		if(!file.exists()){
+			file.mkdirs();
+		}
+		return file;
+	}
+
+	/**
+	 * Parse a new XML file
+	 */
 	protected void openXML() {
 		if(myAnimation.getStatus() == Status.RUNNING)
 			pause();
+		
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Resource File");
+		File userDirectory = getDataDirectory();
+		if(userDirectory.canRead()) {
+			fileChooser.setInitialDirectory(userDirectory);
+		}
+		FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		fileChooser.getExtensionFilters().add(extentionFilter);
 		File file = fileChooser.showOpenDialog(myStage);
 
 		try {
@@ -151,11 +252,10 @@ public class CellSocietyGUI {
 				myButtons.get("Step").setDisable(false);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			showError("Error!","Failed to load "+file.getName(),e);
 		}
-
 	}
+	
 	protected void openModelConfig(String name){
 		if(myAnimation.getStatus() == Status.RUNNING)
 			pause();
@@ -168,12 +268,14 @@ public class CellSocietyGUI {
 					myButtons.get("Step").setDisable(false);
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				showError("Error!","Failed to load given configuration.",e);
 			}
 		});
 	}
 
+	/**
+	 * Start animating
+	 */
 	public void start() {
 		if(myAnimation!=null){
 			myButtons.get("Start").setDisable(true);
@@ -182,6 +284,9 @@ public class CellSocietyGUI {
 		}
 	}
 
+	/**
+	 * Pause the animation
+	 */
 	public void pause() {
 		if(myAnimation!=null){
 			myButtons.get("Pause").setDisable(true);
@@ -190,11 +295,17 @@ public class CellSocietyGUI {
 		}
 	}
 
+	/**
+	 * Reset the game to the original position with the current file
+	 */
 	public void reset() {
 		pause();
 		myManager.reset();
 	}
 	
+	/**
+	 * Step to the next frame in the animation
+	 */
 	public void step(){
 		if (myAnimation == null) return;
 		if (myAnimation.getStatus() == Status.RUNNING){
@@ -205,6 +316,10 @@ public class CellSocietyGUI {
 		}
 	}
 
+	/**
+	 * Change the amount of time between frames
+	 * @param fps New FPS of the animation
+	 */
 	public void changeTime(final double fps) {
 		int timerInterval = (int) (1000 / fps);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(timerInterval), e -> myManager.step());
@@ -217,6 +332,13 @@ public class CellSocietyGUI {
 			start();
 	}
 
+	/**
+	 * Create the control buttons and place them on the screen
+	 * @param property The button text
+	 * @param yIndex The index of the button
+	 * @param handler The EventHandler associated with the button
+	 * @return
+	 */
 	public Button createAndPlaceButton(String property, double yIndex, EventHandler<ActionEvent> handler) {
 		int buttonArea = myWindowWidth - BUTTON_AREA_WIDTH;
 		String label = property;// myResources.getString(property);
@@ -231,6 +353,12 @@ public class CellSocietyGUI {
 		return button;
 	}
 
+	/**
+	 * Add a slider to the screen
+	 * @param yIndex The index of the node from the top of the screen
+	 * @param fps The default value of the slider
+	 * @return The Slider
+	 */
 	public Slider addSlider(double yIndex, double fps) {
 		Slider slider = new Slider(MIN_FPS, MAX_FPS, fps);
 		slider.setMajorTickUnit(1);

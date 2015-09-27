@@ -1,14 +1,10 @@
-
 package model;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
 import cell.Cell;
 import grid.Grid;
 import gui.CellSocietyGUI;
@@ -92,5 +88,14 @@ public abstract class AbstractModel implements Model {
 	
 	public Set<Cell> getCells(){
 		return Collections.unmodifiableSet(myCells);
+	}
+
+	@Override
+	public final String toString() {
+		String name = "model";
+		if(myParameters!=null && myParameters.containsKey("name")){
+			name = myParameters.get("name");
+		}
+		return name+"_"+myWidth+"_"+myHeight+"_"+myAuthor;
 	}
 }

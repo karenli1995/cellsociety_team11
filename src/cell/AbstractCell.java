@@ -1,7 +1,9 @@
 package cell;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import location.Location;
 import state.State;
@@ -88,7 +90,9 @@ public abstract class AbstractCell implements Cell{
 		myCellGUI.updateState(myState);
 	}
 
-	public abstract void remove();
+	public final void remove(){
+		myCellGUI.remove();
+	}
 
 	public void incrementState() {
 		int nextState = (myState.getStateInt() + 1) % myNumStates;
@@ -103,5 +107,13 @@ public abstract class AbstractCell implements Cell{
 
 	public void addOutlines() {
 		myCellGUI.addOutlines();
+	}
+	@Override
+	public final Map<String, String> getAttributes() {
+		Map<String,String> map = new HashMap<>();
+		map.put("x", Integer.toString(myLoc.getX()));
+		map.put("y", Integer.toString(myLoc.getY()));
+		map.put("state", myState.toString());
+		return map;
 	}
 }

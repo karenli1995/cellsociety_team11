@@ -1,11 +1,13 @@
 package cellsociety_team11;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import gui.CellSocietyGUI;
 import model.Model;
 import model.SaxParser;
+import model.XmlWriter;
 
 public class CSManager {
 
@@ -13,10 +15,12 @@ public class CSManager {
 	private SaxParser myParser;
 	private Model myModel;
 	private Map<String,String> myModelConfigMap;
+	private XmlWriter myWriter;
 	
 	public CSManager(CellSocietyGUI csGui){
 		myCsGui = csGui;
 		myParser = new SaxParser(myCsGui);
+		myWriter = new XmlWriter();
 	}
 	
 	public void step(){
@@ -35,6 +39,17 @@ public class CSManager {
 				return false;
 			}
 		}
+	}
+	
+	public String save(File dir) throws Exception{
+		if(!dir.isDirectory() || !dir.canWrite()){
+			throw new IOException("Current working dir is not writable.");
+		}
+		if(myModel==null){
+			throw new Exception("Model does not exist!");
+		}
+		myWriter.init(myModel);
+		return myWriter.createXml(dir);
 	}
 
 	

@@ -39,14 +39,4 @@ public class GOLCell extends AbstractCell{
 				myState.setNextState(LIVE_STATE);
 		}
 	}
-	
-	public void remove() {
-		myCellGUI.remove();
-	}
-
-	@Override
-	public Map<String, String> getAttributes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

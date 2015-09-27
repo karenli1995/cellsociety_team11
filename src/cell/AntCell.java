@@ -268,18 +268,5 @@ public class AntCell extends AbstractCell{
 //			}
 //		}
 //	}
-	
-	
-	@Override
-	public void remove() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Map<String, String> getAttributes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

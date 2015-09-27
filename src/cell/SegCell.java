@@ -52,14 +52,4 @@ public class SegCell extends AbstractCell {
 		return getState().getStateInt() == EMPTY_STATE;
 	}
 
-	public void remove() {
-		myCellGUI.remove();
-	}
-
-	@Override
-	public Map<String, String> getAttributes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -13,6 +13,7 @@ public class CellSociety extends Application {
 		Rectangle2D bounds = screen.getVisualBounds();
 		stage.setWidth(bounds.getWidth());
 		stage.setHeight(bounds.getHeight());
+		stage.setResizable(false);
 		new CellSocietyGUI(stage);
 	}
 

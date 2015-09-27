@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,6 @@ public class FireModel extends AbstractModel {
 	private static final int FIRE_STATE = 2;
 	
 	private double myProbCatchFire = 0.5; //default value
-	private static String STATE_NAMES[] = {"Empty", "Tree", "Burning"};
 
 	public FireModel(CellSocietyGUI csGui) {
 		super(csGui);
@@ -41,8 +41,11 @@ public class FireModel extends AbstractModel {
 			double tmp = Double.parseDouble(parameters.get("probCatchFire"));
 			myProbCatchFire = (tmp<=1 && tmp>=0)?tmp:myProbCatchFire;
 		}
-			
-		
+		Map<Integer,String> map = new HashMap<>();
+		map.put(EMPTY_STATE, "Empty");
+		map.put(TREE_STATE, "Tree");
+		map.put(FIRE_STATE, "Burning");
+		setupGraph(map);	
 	}
 	
 	@Override
@@ -58,7 +61,6 @@ public class FireModel extends AbstractModel {
 			System.err.println("Missing Cell Info!");
 		myGrid = new CardinalGrid(getWidth(), getHeight(), myCells);
 		myGrid.setNeighbors();
-		setupGraph(STATE_NAMES);
 	}
 
 	@Override
@@ -102,7 +104,6 @@ public class FireModel extends AbstractModel {
 				addCell(x,y,mat[x][y]);	
 		myGrid = new CardinalGrid(getWidth(), getHeight(), myCells);
 		myGrid.setNeighbors();
-		setupGraph(STATE_NAMES);
 	}
 	
 	private void addCell(int x,int y,int state){
@@ -111,5 +112,15 @@ public class FireModel extends AbstractModel {
 		myCells.add(cell);
 	}
 
-	
+	@Override
+	protected Map<Integer, Double> getDataPoints() {
+		int[] states = new int[3];
+		myCells.forEach(cell->{states[cell.getState().getStateInt()]++;});
+		Map<Integer, Double> stateMap = new HashMap<>();
+		stateMap.put(TREE_STATE, (double)states[TREE_STATE]);
+		stateMap.put(FIRE_STATE, (double)states[FIRE_STATE]);
+		stateMap.put(EMPTY_STATE, (double)states[EMPTY_STATE]);
+		return stateMap;
+	}
+
 }

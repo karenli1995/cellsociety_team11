@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -18,7 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class xmlWriter {
+public class XmlWriter {
 	private Document myDoc;
 	private Element myRoot;
 	private Model myModel;
@@ -64,14 +65,14 @@ public class xmlWriter {
 		});
 	}
 
-	public String createXml() throws Exception {
+	public String createXml(File dir) throws Exception {
 		createModel();
 		createCells();
 		
 		DateFormat df = new SimpleDateFormat("MMddyy_HHmmss");
     	Calendar calObj = Calendar.getInstance();
     	String timeStamp = df.format(calObj.getTime());
-		String fileName = myModel +timeStamp+".xml";
+		String fileName = dir.getAbsolutePath()+"\\"+myModel+"_"+timeStamp+".xml";
 		
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer transformer = tf.newTransformer();
@@ -81,7 +82,7 @@ public class xmlWriter {
 		PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
 		StreamResult result = new StreamResult(pw);
 		transformer.transform(source, result);
-		System.out.println("Done! Name: " + fileName);
+		//System.out.println("Done! Name: " + fileName);
 		return fileName;
 	}
 

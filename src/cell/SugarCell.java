@@ -142,10 +142,4 @@ public class SugarCell extends AbstractCell{
 		return minDistCell;
 	}
 
-	@Override
-	public Map<String, String> getAttributes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

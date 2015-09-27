@@ -127,10 +127,6 @@ public class PredCell extends AbstractCell {
 		moveMyStateToCell(chosenCell);
 	}
 
-	public void remove() {
-		myCellGUI.remove();
-	}
-
 	@Override
 	public void goToNextState() {
 		super.goToNextState();
@@ -148,11 +144,5 @@ public class PredCell extends AbstractCell {
 			setSharkEnergy(0);
 		}
 		setNumChronon(0);// reproductive state reset
-	}
-
-	@Override
-	public Map<String, String> getAttributes() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

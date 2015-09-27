@@ -40,7 +40,6 @@ public class SaxParser {
 		Model model = Model.getModel(name, myCsGui);
 		if (model != null) {
 			model.initialize(myModelConfig, myCells);
-			System.out.println("Model created successfully!");
 		}
 		return model;
 	}
