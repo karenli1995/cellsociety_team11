@@ -88,6 +88,10 @@ public class AntModel extends AbstractModel{
 		}
 		int numAnts = (int)(total*pA);
 		
+		double percentNestWidth = 0.3;
+		int nestWidth = (int) (getWidth()*percentNestWidth);
+		
+		
 		for(int i=0;i<mat.length;i++){
 			Arrays.fill(mat[i], EMPTY_STATE);
 		}
@@ -98,33 +102,21 @@ public class AntModel extends AbstractModel{
 		if(mat[x][y]==EMPTY_STATE){
 			mat[x][y] = NEST_STATE;
 		}
-
 		
 		int i=0;
-		while(i < numAnts - 1){
-			if(i%8 == 0){
-				x++;
-			}else if (i%8 == 1){
-				y++;
-			}else if (i%8 == 2){
-				x--;
-			}else if (i%8 == 3){
-				x--;
-			}else if (i%8 == 4){
-				y--;
-			}else if (i%8 == 5){
-				y--;
-			}else if (i%8 == 6){
-				x++;
-			}else if (i%8 == 7){
-				x++;
+		while(i < numAnts){
+			for(int p=0; p<=nestWidth; p++){
+				if ((x+p) < getWidth()){
+					if(mat[x+p][y]==EMPTY_STATE){
+						mat[x+p][y] = NEST_STATE;
+					}
+				} else {
+					break;
+				}
 			}
-				
-			
-			if(mat[x][y]==EMPTY_STATE){
-				mat[x][y] = NEST_STATE;
-				i++;
-			}
+			x = t % getWidth();
+			if (y < getHeight()) y++;
+			else break;
 		}
 		
 

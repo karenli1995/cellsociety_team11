@@ -38,49 +38,30 @@ public class AntModel extends Model {
 	private void fillCells(int[][] mat, int limit, int state){
 		Random rand = new Random(System.currentTimeMillis());
 		int total = mat.length*mat[0].length;
-//		int i = 0;
-//		while(i < limit){
-//			int t = rand.nextInt(total);
-//			int x = t % mat[0].length, y = t / mat[0].length;
-//			if(mat[x][y]==EMPTY_STATE){
-//				mat[x][y] = state;
-//				i++;
-//			}
-//		}
+		
+		double percentNestWidth = 0.3;
+		int nestWidth = (int) (getWidth()*percentNestWidth);
 		
 		int t = rand.nextInt(total);
 		int x = t % getWidth(), y = t / getWidth();
 		if(mat[x][y]==EMPTY_STATE){
 			mat[x][y] = NEST_STATE;
 		}
-
 		
 		int i=0;
-		while(i < limit - 1){
-			if(i%8 == 0){
-				x++;
-			}else if (i%8 == 1){
-				y++;
-			}else if (i%8 == 2){
-				x--;
-			}else if (i%8 == 3){
-				x--;
-			}else if (i%8 == 4){
-				y--;
-			}else if (i%8 == 5){
-				y--;
-			}else if (i%8 == 6){
-				x++;
-			}else if (i%8 == 7){
-				x++;
+		while(i < numAnts){
+			for(int p=0; p<=nestWidth; p++){
+				if ((x+p) < getWidth()){
+					if(mat[x+p][y]==EMPTY_STATE){
+						mat[x+p][y] = NEST_STATE;
+					}
+				}
 			}
-				
-			
-			if(mat[x][y]==EMPTY_STATE){
-				mat[x][y] = NEST_STATE;
-				i++;
-			}
+			x = t % getWidth();
+			if (y < getHeight()) y++;
+			else break;
 		}
+		
 	}
 	
 	@Override
@@ -95,6 +76,7 @@ public class AntModel extends Model {
 				list.add(createCell(x, y, mat[x][y]));
 			}
 		}
+		System.out.println(list + " lil");
 		return list;
 	}
 

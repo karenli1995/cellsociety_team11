@@ -13,7 +13,7 @@ public interface Model {
 
 	@SuppressWarnings("rawtypes")
 	public static Model getModel(String name, CellSocietyGUI csGui){
-		String tmp = "GOLModel PredModel SegModel FireModel SugarModel";
+		String tmp = "GOLModel PredModel SegModel FireModel AntModel SugarModel";
 		List<String> models = Arrays.asList(tmp.split("\\s+"));
 		if (models.contains(name)) {
 			try {
