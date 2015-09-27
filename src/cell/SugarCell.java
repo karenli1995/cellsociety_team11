@@ -88,12 +88,6 @@ public class SugarCell extends AbstractCell{
 			setPatchAmntSugar(getPatchAmntSugar() + SUGAR_GROWBACK_RATE);
 		}
 	}
-
-	@Override
-	public void remove() {
-		// TODO Auto-generated method stub
-		myCellGUI.remove();
-	}
 	
 	private boolean moveMyStateAndAgentToCell(SugarCell chosenCell) {
 		if (chosenCell == null)
