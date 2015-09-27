@@ -9,18 +9,11 @@ import state.State;
 import state.SugarState;
 
 public class SugarCell extends AbstractCell{
-//	private static final int PATCH_STATE_0 = 0;
-//	private static final int PATCH_STATE_1 = 1;
-//	private static final int PATCH_STATE_2 = 2;
-//	private static final int PATCH_STATE_3 = 3;
-//	private static final int PATCH_STATE_4 = 4;
-//	private static final int NUM_STATES = 5;
 	
 	private static final int NO_AGENT_STATE = 0;
 	private static final int AGENT_STATE = 1;
 	
 	private static final int SUGAR_GROWBACK_RATE = 1;
-	//private static final int SUGAR_GROWBACK_INTERVAL = 1;
 	
 	private SugarState mySugarState;
 	private int myAgentState;

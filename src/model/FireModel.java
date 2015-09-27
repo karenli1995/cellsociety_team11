@@ -73,14 +73,6 @@ public class FireModel extends AbstractModel {
 		for(int i=0;i<mat.length;i++){
 			Arrays.fill(mat[i], TREE_STATE);
 		}
-		for(int i = 0;i<getWidth();i++){
-			mat[i][0] = EMPTY_STATE;
-			mat[i][getHeight()-1] = EMPTY_STATE;
-		}
-		for(int i = 0;i<getHeight();i++){
-			mat[0][i] = EMPTY_STATE;
-			mat[getWidth()-1][i] = EMPTY_STATE;
-		}
 		int i = 0;
 		while(i < numBurning){
 			int t = myRandom.nextInt(total);

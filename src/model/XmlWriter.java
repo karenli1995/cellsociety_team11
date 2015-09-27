@@ -72,7 +72,7 @@ public class XmlWriter {
 		DateFormat df = new SimpleDateFormat("MMddyy_HHmmss");
     	Calendar calObj = Calendar.getInstance();
     	String timeStamp = df.format(calObj.getTime());
-		String fileName = dir.getAbsolutePath()+"\\"+myModel+"_"+timeStamp+".xml";
+		String fileName = dir.getAbsolutePath()+File.separator+myModel+"_"+timeStamp+".xml";
 		
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer transformer = tf.newTransformer();

@@ -15,8 +15,8 @@ public class TriangleCellGUI extends CellGUI {
 	
 	public TriangleCellGUI(CellSocietyGUI CSGUI, Location loc) {
 		super(CSGUI);
-		myCellWidth = CSGUI.getGridWidth() / (loc.getHeight() + 1) * 2;
-		myCellHeight = CSGUI.getGridHeight() / loc.getWidth();
+		myCellWidth = CSGUI.getGridWidth() / (loc.getWidth() + 1) * 2;
+		myCellHeight = CSGUI.getGridHeight() / loc.getHeight();
 		myShape = createTriangle(loc);
 		addShapeToScreen();
 	}
