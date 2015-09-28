@@ -2,61 +2,41 @@ package state;
 
 import javafx.scene.paint.Color;
 
-public abstract class State {
-	private Color myColor;
-	private Color[] myColors;
-	private int myStateInt = 0;
-	private int myNextStateInt = 0;
+public interface State {
+	
+	/**
+	 * Get the color representing current state
+	 * @return color
+	 */
+	public Color getColor();
+	
+	/**
+	 * Get opacity of current state
+	 * @return default is 1
+	 */
+	public double getOpacity();
+	
+	/**
+	 * Get the int representing the current state
+	 * @return an int value
+	 */
+	public int getStateInt();
+	
+	/**
+	 * Set the integer value of the next state
+	 * @param nextStateInt
+	 */
+	public void setNextState(int nextStateInt);
+	
+	/**
+	 * Set the next state
+	 * @param a state
+	 */
+	public void setNextState(State s);
+	
+	/**
+	 * Let the current state equals next state
+	 */
+	public void goToNextState();
 
-	State(int state){
-		myStateInt = state;
-		myNextStateInt = state;
-	}
-	
-	public Color getColor() {
-		return myColor;
-	}
-	
-	public void setAvailableColors(Color[] colors){
-		myColors = colors;
-	}
-	
-	public void setColor(int s){
-		myColor = myColors[s];
-	}
-	
-	public int getStateInt(){
-		return myStateInt;
-	}
-	
-	public void setNextState(int nextStateInt) {
-		myNextStateInt = nextStateInt;
-	}
-	
-	public void goToNextState() {
-		myStateInt = myNextStateInt;
-		setColor(myStateInt);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + myStateInt;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null || getClass() != obj.getClass())
-			return false;
-		return myStateInt == ((State)obj).myStateInt;
-	}
-	
-	@Override
-	public String toString(){
-		return Integer.toString(myStateInt); 
-	}
 }

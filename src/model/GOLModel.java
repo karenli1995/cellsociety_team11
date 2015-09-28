@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import location.Location;
 import location.ToroidalLocation;
 import state.GOLState;
 import cell.Cell;
 import cell.GOLCell;
-import grid.TriangleGrid;
+import grid.Grid;
+import grid.SquareGrid;
 import gui.CellSocietyGUI;
 
 public class GOLModel extends AbstractModel {
@@ -47,7 +49,7 @@ public class GOLModel extends AbstractModel {
 		});
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
-		myGrid = new TriangleGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 
@@ -64,24 +66,18 @@ public class GOLModel extends AbstractModel {
 		int numLiveCells = (int)(total*percentLive);
 		int mat[][] = new int[getWidth()][getHeight()];
 		
-		int i = 0;
-		while(i < numLiveCells){
-			int t = myRandom.nextInt(total);
-			int x = t % getWidth(), y = t / getWidth();
-			if(mat[x][y]==DEAD_STATE){
-				mat[x][y] = LIVE_STATE;
-				i++;
-			}
-		}
+		randomFillMatrix(mat, DEAD_STATE, LIVE_STATE, numLiveCells);
+
 		for (int x = 0; x < mat.length; x++)
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x,y,mat[x][y]);	
-		myGrid = new TriangleGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 	
 	private void addCell(int x,int y,int state){
-		Cell cell = new GOLCell(new GOLState(state), new ToroidalLocation(x,y, myWidth, getHeight()), myCSGUI);
+		Location loc = Location.makeLocation(x, y, getWidth(), getHeight(), myCSGUI);
+		Cell cell = new GOLCell(new GOLState(state), loc, myCSGUI);
 		myCells.add(cell);
 	}
 

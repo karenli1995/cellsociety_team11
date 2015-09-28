@@ -1,14 +1,13 @@
 package model;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import location.ToroidalLocation;
+import location.Location;
 import state.AntState;
 import cell.AntCell;
-import grid.SquareGrid;
+import grid.Grid;
 import gui.CellSocietyGUI;
 
 public class AntModel extends AbstractModel{
@@ -26,11 +25,6 @@ public class AntModel extends AbstractModel{
 
 	AntModel(CellSocietyGUI CSGUI) {
 		super(CSGUI);
-	}
-
-	@Override
-	public void setParameters(Map<String,String> parameters){
-		super.setParameters(parameters);
 	}
 	
 	@Override
@@ -66,7 +60,7 @@ public class AntModel extends AbstractModel{
 		});
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
-		myGrid = new SquareGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 
@@ -85,25 +79,17 @@ public class AntModel extends AbstractModel{
 		
 		double percentNestWidth = 0.3;
 		int nestWidth = (int) (getWidth()*percentNestWidth);
-		
-		
-		for(int i=0;i<mat.length;i++){
-			Arrays.fill(mat[i], EMPTY_STATE);
-		}
-		
 	
 		int t = myRandom.nextInt(total);
 		int x = t % getWidth(), y = t / getWidth();
-		System.out.println(x + " hi");
 		if(mat[x][y]==EMPTY_STATE){
 			mat[x][y] = NEST_STATE;
 		}
-		
 		int i=0;
 		while(i < numAnts){
 			
 			for(int p=0; p<=nestWidth; p++){
-				if ((x+p) < getWidth()){
+				if ((x+p) < getWidth() && y<getHeight()){
 					if(mat[x+p][y]==EMPTY_STATE){
 						mat[x+p][y] = NEST_STATE;
 						i++;
@@ -130,20 +116,18 @@ public class AntModel extends AbstractModel{
 				j++;
 			}
 		}
-		
-		
-		
+
 
 		for (int x1 = 0; x1 < mat.length; x1++)
 			for (int y1 = 0; y1 < mat[x1].length; y1++)
 				addCell(x1,y1,mat[x1][y1]);	
-		
-		myGrid = new SquareGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 	
 	private void addCell(int x,int y,int state){
-		AntCell cell = new AntCell(new AntState(state), new ToroidalLocation(x,y, myWidth, getHeight()), myCSGUI);
+		Location loc = Location.makeLocation(x, y, getWidth(), getHeight(), myCSGUI);
+		AntCell cell = new AntCell(new AntState(state), loc, myCSGUI);
 		cell.setParameters(myEvaporationRate, myDiffusionRate);
 		myCells.add(cell);
 	}

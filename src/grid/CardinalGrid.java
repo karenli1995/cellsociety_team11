@@ -53,4 +53,10 @@ public class CardinalGrid extends Grid{
 		return "";
 	}
 
+	@Override
+	public List<Location> getAdjacentLoc(Location loc, int radius) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

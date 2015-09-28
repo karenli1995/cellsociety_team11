@@ -163,7 +163,7 @@ public abstract class AbstractCell implements Cell{
 	}
 	
 	@Override
-	public final Map<String, String> getAttributes() {
+	public Map<String, String> getAttributes() {
 		Map<String,String> map = new HashMap<>();
 		map.put("x", Integer.toString(myLoc.getX()));
 		map.put("y", Integer.toString(myLoc.getY()));

@@ -52,7 +52,7 @@ public interface Cell {
 	public void goToNextState();
 
 	/**
-	 * 
+	 * remove the cell from the grid
 	 */
 	public void remove();
 
@@ -71,5 +71,9 @@ public interface Cell {
 	 */
 	public void addOutlines();
 	
+	/**
+	 * get a map of attributes for XML creating purpose
+	 * @return Map<String,String>
+	 */
 	public Map<String,String> getAttributes();
 }

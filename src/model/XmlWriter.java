@@ -24,6 +24,11 @@ public class XmlWriter {
 	private Element myRoot;
 	private Model myModel;
 
+	/**
+	 * Initialize with a model
+	 * @param model
+	 * @throws Exception
+	 */
 	public void init(Model model) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
@@ -64,7 +69,13 @@ public class XmlWriter {
 			addAttributes(addRootElement(cells, "cell"), cell.getAttributes());
 		});
 	}
-
+	
+	/**
+	 * create an xml file in given directory
+	 * @param dir
+	 * @return absolute path name of the file created
+	 * @throws Exception
+	 */
 	public String createXml(File dir) throws Exception {
 		createModel();
 		createCells();

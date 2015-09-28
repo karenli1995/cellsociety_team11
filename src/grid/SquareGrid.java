@@ -30,4 +30,20 @@ public class SquareGrid extends Grid {
 		}
 		return list;
 	}
+
+	@Override
+	public List<Location> getAdjacentLoc(Location loc, int radius) {
+		List<Location> list = new ArrayList<>(radius*radius);
+		for(int x = -radius;x<=radius;x++){
+			for(int y = -radius;y<=radius;y++){
+				if(x==0 && y==0) continue;
+				if(x*x+y*y>radius*radius) continue;
+				Location neighbor = loc.getLocation(loc.getX()+x, loc.getY()+y);
+				if(neighbor!=null){
+					list.add(neighbor);
+				}
+			}
+		}
+		return list;
+	}
 }

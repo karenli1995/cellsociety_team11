@@ -11,8 +11,8 @@ import location.ToroidalLocation;
 import state.SegState;
 import cell.Cell;
 import cell.SegCell;
+import grid.Grid;
 import grid.SquareGrid;
-import grid.TriangleGrid;
 import gui.CellSocietyGUI;
 
 public class SegModel extends AbstractModel {
@@ -29,18 +29,10 @@ public class SegModel extends AbstractModel {
 	}
 
 	@Override
-	public void setParameters(Map<String, String> map) {
-		// TODO Auto-generated method stub
-		super.setParameters(map);
-		if (map.containsKey("similarity"))
-			mySimilarity = Double.parseDouble(map.get("similarity"));
-	}
-
-	@Override
 	public void step() {
 		Stack<Cell> exchangeList = getDissatisfiedCells();
 		if (myCells != null && !myCells.isEmpty())
-			myDissatisfactionRate = 1 - 100.0 * exchangeList.size() / myCells.size();
+			myDissatisfactionRate = 100 - 100.0 * exchangeList.size() / myCells.size();
 		exchangeList.addAll(getVacentCells());
 		Collections.shuffle(exchangeList);
 
@@ -98,7 +90,7 @@ public class SegModel extends AbstractModel {
 		});
 		if (myCells.size() < getWidth() * getHeight())
 			System.err.println("Missing Cell Info!");
-		myGrid = new SquareGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 
@@ -119,34 +111,20 @@ public class SegModel extends AbstractModel {
 		int total = myWidth * myHeight;
 		int numTypeA = (int) (total * pA), numTypeB = (int) (total * pB);
 		int mat[][] = new int[getWidth()][getHeight()];
-
-		int i = 0;
-		while (i < numTypeA) {
-			int t = myRandom.nextInt(total);
-			int x = t % getWidth(), y = t / getWidth();
-			if (mat[x][y] == EMPTY_STATE) {
-				mat[x][y] = STATE_A;
-				i++;
-			}
-		}
-		i = 0;
-		while (i < numTypeB) {
-			int t = myRandom.nextInt(total);
-			int x = t % getWidth(), y = t / getWidth();
-			if (mat[x][y] == EMPTY_STATE) {
-				mat[x][y] = STATE_B;
-				i++;
-			}
-		}
+		
+		randomFillMatrix(mat, EMPTY_STATE, STATE_A, numTypeA);
+		randomFillMatrix(mat, EMPTY_STATE, STATE_B, numTypeB);
+		
 		for (int x = 0; x < mat.length; x++)
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x, y, mat[x][y]);
-		myGrid = new TriangleGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 
 	private void addCell(int x, int y, int state) {
-		SegCell cell = new SegCell(new SegState(state), new Location(x, y, myWidth, getHeight()), myCSGUI);
+		Location loc = Location.makeLocation(x, y, getWidth(), getHeight(), myCSGUI);
+		SegCell cell = new SegCell(new SegState(state), loc, myCSGUI);
 		cell.setSimilarity(mySimilarity);
 		myCells.add(cell);
 	}

@@ -31,6 +31,15 @@ public class CSManager {
 			myModel.step();
 	}
 	
+	public void setOutline(boolean value){
+		if(myModel!=null){
+			if(value)
+				myModel.getCells().forEach(cell->{cell.addOutlines();});
+			else
+				myModel.getCells().forEach(cell->{cell.removeOutlines();});
+		}
+	}
+	
 	/**
 	 * Reset the grid to it's original state with the current xml
 	 * @return True if createModel succeeded

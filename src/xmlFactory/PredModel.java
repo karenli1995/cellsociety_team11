@@ -28,9 +28,9 @@ public class PredModel extends Model {
 	}
 	
 	public void setModelParameters(int fishEnergy, int sharkEnergy, int livesReproduce){
-		addModelParameter("FISH_ENERGY", fishEnergy);
-		addModelParameter("SHARK_ENERGY", sharkEnergy);
-		addModelParameter("LIVES_REPRODUCE", livesReproduce);
+		addModelParameter("fishEnergy", fishEnergy);
+		addModelParameter("sharkEnergy", sharkEnergy);
+		addModelParameter("livesReproduce", livesReproduce);
 	}
 	
 	private void fillCells(int[][] mat, int limit, int state){

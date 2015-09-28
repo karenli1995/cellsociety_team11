@@ -10,8 +10,9 @@ import location.ToroidalLocation;
 import state.FireState;
 import cell.FireCell;
 import grid.CardinalGrid;
+import grid.Grid;
+import grid.SquareCardinalGrid;
 import grid.SquareGrid;
-import grid.TriangleGrid;
 import gui.CellSocietyGUI;
 
 public class FireModel extends AbstractModel {
@@ -24,14 +25,6 @@ public class FireModel extends AbstractModel {
 
 	public FireModel(CellSocietyGUI csGui) {
 		super(csGui);
-	}
-	
-	@Override
-	public void setParameters(Map<String,String> map){
-		// TODO Auto-generated method stub
-		super.setParameters(map);
-		if(map.containsKey("probCatchFire"))
-			myProbCatchFire = Double.parseDouble(map.get("probCatchFire"));
 	}
 
 	@Override
@@ -59,7 +52,7 @@ public class FireModel extends AbstractModel {
 		});
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
-		myGrid = new CardinalGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 
@@ -73,33 +66,20 @@ public class FireModel extends AbstractModel {
 		for(int i=0;i<mat.length;i++){
 			Arrays.fill(mat[i], TREE_STATE);
 		}
-		int i = 0;
-		while(i < numBurning){
-			int t = myRandom.nextInt(total);
-			int x = t % getWidth(), y = t / getWidth();
-			if(mat[x][y]==TREE_STATE){
-				mat[x][y] = FIRE_STATE;
-				i++;
-			}
-		}
-		i = 0;
-		while(i < numEmpty){
-			int t = myRandom.nextInt(total);
-			int x = t % getWidth(), y = t / getWidth();
-			if(mat[x][y]==TREE_STATE){
-				mat[x][y] = EMPTY_STATE;
-				i++;
-			}
-		}
+		randomFillMatrix(mat, TREE_STATE, FIRE_STATE, numBurning);
+		randomFillMatrix(mat, TREE_STATE, EMPTY_STATE, numEmpty);
+
 		for (int x = 0; x < mat.length; x++)
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x,y,mat[x][y]);	
-		myGrid = new CardinalGrid(getWidth(), getHeight(), myCells);
+
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 	
 	private void addCell(int x,int y,int state){
-		FireCell cell = new FireCell(new FireState(state), new Location(x,y, getWidth(), getHeight()), myCSGUI);
+		Location loc = Location.makeLocation(x, y, getWidth(), getHeight(), myCSGUI);
+		FireCell cell = new FireCell(new FireState(state), loc, myCSGUI);
 		cell.setProbCatchFire(myProbCatchFire);
 		myCells.add(cell);
 	}

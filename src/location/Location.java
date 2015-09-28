@@ -1,10 +1,23 @@
 package location;
 
+import gui.CellSocietyGUI;
+
 public class Location {
 	
 	private int myX, myY;
 	protected int myWidth;
 	protected int myHeight;
+	
+	public static Location makeLocation(int x, int y, int width, int height, CellSocietyGUI csGui){
+		switch (csGui.getWrapType()) {
+		case "false":
+			return new Location(x,y,width,height);
+		case "true":
+			return new ToroidalLocation(x,y,width,height);
+		default:
+			return new Location(x,y,width,height);
+		}
+	}
 	
 	public Location(int x, int y, int width, int height){
 		myX = x;
@@ -40,14 +53,7 @@ public class Location {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(myX);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(myY);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
+		return 1003 * myWidth + myHeight;
 	}
 
 	@Override

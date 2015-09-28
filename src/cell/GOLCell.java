@@ -6,6 +6,7 @@ import state.State;
 
 import java.util.Map;
 
+import gui.CellGUI;
 import gui.CellSocietyGUI;
 import gui.HexagonCellGUI;
 import gui.SquareCellGUI;
@@ -21,7 +22,7 @@ public class GOLCell extends AbstractCell{
 	public GOLCell(State s, Location l, CellSocietyGUI CSGUI) {
 		super(s, NUM_STATES, l, CSGUI);
 		
-		myCellGUI = new HexagonCellGUI(CSGUI, l);
+		myCellGUI = CellGUI.makeCellGUI(CSGUI, l);
 		myCellGUI.updateState(s);
 		addClickListener();
 	}

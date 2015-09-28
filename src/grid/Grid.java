@@ -8,12 +8,24 @@ import java.util.Set;
 
 import location.Location;
 import cell.Cell;
+import gui.CellSocietyGUI;
 
 public abstract class Grid {
 	
 	protected int myWidth;		// This should be in squareGrid.  Grid doesn't necessarily have rows and columns
 	protected int myHeight;
 	protected Map<Location, Cell> myCells;
+	
+	public static Grid makeGrid(int width,int height,Set<Cell> cells,CellSocietyGUI csGui){
+		switch (csGui.getGridType()) {
+		case "square":
+			return new SquareGrid(width,height,cells);
+		case "squareCardinal":
+			return new SquareCardinalGrid(width,height,cells);
+		default:
+			return new SquareGrid(width,height,cells);
+		}
+	}
 	
 	/**
 	 * 
@@ -61,6 +73,12 @@ public abstract class Grid {
 			cell.setNeighborCells(getAdjacentCells(cell));
 		});
 	}
+	
+	public void setNeighbors(int radius) {
+		myCells.forEach((loc,cell)->{
+			cell.setNeighborCells(getAdjacentCells(cell,radius));
+		});
+	}
 
 	/**
 	 * Get the locations adjacent to the specified location
@@ -68,6 +86,8 @@ public abstract class Grid {
 	 * @return A List of adjacent locations
 	 */
 	public abstract List<Location> getAdjacentLoc(Location loc);
+	
+	public abstract List<Location> getAdjacentLoc(Location loc,int radius);
 
 	/**
 	 * Get cells adjacent to the specified cell
@@ -77,6 +97,14 @@ public abstract class Grid {
 	public List<Cell> getAdjacentCells(Cell cell) {
 		List<Cell> neighbors = new ArrayList<>();
 		getAdjacentLoc(cell.getLocation()).forEach(loc->{
+			neighbors.add(getCell(loc));
+		});
+		return neighbors;
+	}
+	
+	public List<Cell> getAdjacentCells(Cell cell,int radius) {
+		List<Cell> neighbors = new ArrayList<>();
+		getAdjacentLoc(cell.getLocation(),radius).forEach(loc->{
 			neighbors.add(getCell(loc));
 		});
 		return neighbors;

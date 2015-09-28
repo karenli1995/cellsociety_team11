@@ -2,7 +2,9 @@ package state;
 
 import javafx.scene.paint.Color;
 
-public class AntState extends State{
+public class AntState extends AbstractState{
+	
+	private static final Color[] COLORS = {Color.WHITE, Color.PURPLE, Color.YELLOW, Color.RED, Color.GREEN, Color.BLACK}; //0=empty; 1=nest; 2=food source; 3=home pheromone; 4=food pheromone; 5=ant
 	private static final int EMPTY_STATE = 0;
 	private static final int NEST_STATE = 1;
 	private static final int FOOD_SOURCE_STATE = 2;
@@ -16,12 +18,6 @@ public class AntState extends State{
 
 	public AntState(int state) {  
 		super(state);
-	
-		Color[] colors = {Color.WHITE, Color.PURPLE, Color.YELLOW, Color.RED, Color.GREEN, Color.BLACK}; //0=empty; 1=nest; 2=food source; 3=home pheromone; 4=food pheromone; 5=ant
-		setAvailableColors(colors);
-		this.setColor(state);
-		
-		
 		if(state == NEST_STATE){
 			setContainsAnt(true);
 		}else{
@@ -36,5 +32,11 @@ public class AntState extends State{
 	
 	public boolean getContainsAnt(){
 		return containsAnt;
+	}
+
+
+	@Override
+	public Color getColor() {
+		return COLORS[myStateInt];
 	}
 }

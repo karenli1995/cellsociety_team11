@@ -6,6 +6,7 @@ import state.State;
 
 import java.util.Map;
 
+import gui.CellGUI;
 import gui.CellSocietyGUI;
 import gui.SquareCellGUI;
 
@@ -22,7 +23,7 @@ public class SegCell extends AbstractCell {
 	public SegCell(State s, Location l, CellSocietyGUI CSGUI) {
 		super(s, NUM_STATES, l, CSGUI);
 
-		myCellGUI = new SquareCellGUI(CSGUI, l);
+		myCellGUI = CellGUI.makeCellGUI(CSGUI, l);
 		myCellGUI.updateState(s);
 		addClickListener();
 	}

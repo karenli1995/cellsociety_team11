@@ -1,34 +1,45 @@
 package state;
 
-import java.util.Random;
 import javafx.scene.paint.Color;
 
-public class SugarState extends State{
-	private int myAgent;
+public class SugarState extends AbstractState{
+	
+	private boolean isAgent;
+	private static int maxSugar = 0; //Well, I do want this to sync across all SugarState instances
 
-	public SugarState(int s) {
+	public SugarState(int s,boolean isAgent) {
 		super(s);
-		Color[] colors = {Color.WHITE,Color.BISQUE, Color.ORANGE, Color.DARKORANGE, Color.ORANGERED, Color.BLACK, Color.TRANSPARENT}; 
-		setAvailableColors(colors);
-		this.setColor(s);
-		
-		Random randomGenerator = new Random();
-		int randomInt = randomGenerator.nextInt(1); //0=no agent; 1=agent
-		setAgent(randomInt);
-		//drawCircle
+		this.isAgent = isAgent;
+		if(!this.isAgent && myStateInt>maxSugar)
+			maxSugar = myStateInt;
 	}
 	
-	public void setAgent(int a){
-		myAgent = a;
-		if(a == 1) {
-			this.setColor(5);
-		}else{
-			this.setColor(6);
+	@Override
+	public void setNextState(State s) {
+		super.setNextState(s);
+		if(s instanceof SugarState){
+			isAgent = ((SugarState)s).isAgent;
 		}
 	}
 	
-	public int getAgent(){
-		return myAgent;
+	public boolean getAgent(){
+		return isAgent;
+	}
+	
+	@Override
+	public double getOpacity() {
+		if(isAgent)
+			return 1;
+		else
+			return myStateInt*1.0/maxSugar;
+	};
+
+	@Override
+	public Color getColor() {
+		if(isAgent)
+			return Color.RED;
+		else
+			return Color.DARKORANGE;
 	}
 
 }

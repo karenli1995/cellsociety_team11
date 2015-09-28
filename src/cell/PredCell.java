@@ -6,6 +6,7 @@ import java.util.Map;
 import location.Location;
 import state.PredState;
 import state.State;
+import gui.CellGUI;
 import gui.CellSocietyGUI;
 import gui.SquareCellGUI;
 import javafx.scene.input.MouseEvent;
@@ -26,7 +27,7 @@ public class PredCell extends AbstractCell {
 
 	public PredCell(State s, Location l, CellSocietyGUI CSGUI) {
 		super(s, NUM_STATES, l, CSGUI);
-		myCellGUI = new SquareCellGUI(CSGUI, l);
+		myCellGUI = CellGUI.makeCellGUI(CSGUI, l);
 		myCellGUI.updateState(s);
 		addClickListener();
 		if (isInState(SHARK_STATE)) {

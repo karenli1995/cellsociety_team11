@@ -63,6 +63,18 @@ public abstract class AbstractModel implements Model {
 		myCSGUI.resetGraph();
 	}
 	
+	protected void randomFillMatrix(int[][] mat,int initialState,int finalState, int totalToFill){
+		int i = 0;
+		while(i < totalToFill){
+			int t = myRandom.nextInt(myWidth*myHeight);
+			int x = t % myWidth, y = t / myWidth;
+			if(mat[x][y]==initialState){
+				mat[x][y] = finalState;
+				i++;
+			}
+		}
+	}
+	
 	protected void setupGraph(Map<Integer,String> names) {
 		myCSGUI.resetGraph();
 		names.forEach((k,v)->{myCSGUI.addSeries(k, v);});

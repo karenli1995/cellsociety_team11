@@ -2,13 +2,18 @@ package state;
 
 import javafx.scene.paint.Color;
 
-public class FireState extends State {
+public class FireState extends AbstractState {
+	
+	private static final Color[] COLORS = {Color.YELLOW,Color.GREEN,Color.BROWN}; //Empty, Live, Burning tree
 	
 	public FireState(int s) {
 		super(s);
-		Color[] colors = {Color.YELLOW,Color.GREEN,Color.BROWN}; //Empty, Live, Burning tree
-		this.setAvailableColors(colors);
-		this.setColor(s);
 	}
+	
+	@Override
+	public Color getColor() {
+		return COLORS[myStateInt];
+	}
+	
 
 }

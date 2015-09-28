@@ -6,6 +6,7 @@ import java.util.Random;
 import location.Location;
 import state.FireState;
 import state.State;
+import gui.CellGUI;
 import gui.CellSocietyGUI;
 import gui.SquareCellGUI;
 
@@ -20,19 +21,19 @@ public class FireCell extends AbstractCell{
 
 	public FireCell(State s, Location l, CellSocietyGUI CSGUI) {
 		super(s, NUM_STATES, l, CSGUI);
-		myCellGUI = new SquareCellGUI(CSGUI, l);
+		myCellGUI = CellGUI.makeCellGUI(CSGUI, l);
 		myCellGUI.updateState(s);
 		addClickListener();
 	}
 
-	
+	/**
+	 * Set the probability of catching fire
+	 * @param probCatchFire
+	 */
 	public void setProbCatchFire(double probCatchFire) {
 		myProbCatchFire = probCatchFire;
 	}
 	 
-	/**
-         * Determine the next state for the cell to go to
-         */
 	@Override
 	public void determineNextState() {
 		int numBurningNeighbors = getNeighborsInState(new FireState(BURN_STATE)).size();

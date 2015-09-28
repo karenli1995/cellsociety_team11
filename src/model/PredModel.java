@@ -8,8 +8,8 @@ import location.Location;
 import location.ToroidalLocation;
 import state.PredState;
 import cell.PredCell;
+import grid.Grid;
 import grid.SquareGrid;
-import grid.TriangleGrid;
 import gui.CellSocietyGUI;
 
 public class PredModel extends AbstractModel {
@@ -27,24 +27,18 @@ public class PredModel extends AbstractModel {
 	}
 	
 	@Override
-	public void setParameters(Map<String,String> map){
-		// TODO Auto-generated method stub
-		super.setParameters(map);
-	}
-	
-	@Override
 	protected void setBasicConfig(Map<String, String> parameters){
 		super.setBasicConfig(parameters);
-		if(parameters.containsKey("FISH_ENERGY")){
-			int tmp = Integer.parseInt(parameters.get("FISH_ENERGY"));
+		if(parameters.containsKey("fishEnergy")){
+			int tmp = Integer.parseInt(parameters.get("fishEnergy"));
 			myFishEnergy = tmp>0?tmp:myFishEnergy;
 		}
-		if(parameters.containsKey("SHARK_ENERGY")){
-			int tmp = Integer.parseInt(parameters.get("SHARK_ENERGY"));
+		if(parameters.containsKey("maxSharkEnergy")){
+			int tmp = Integer.parseInt(parameters.get("maxSharkEnergy"));
 			myMaxSharkEnergy = tmp>0?tmp:myMaxSharkEnergy;
 		}	
-		if(parameters.containsKey("LIVES_REPRODUCE")){
-			int tmp = Integer.parseInt(parameters.get("LIVES_REPRODUCE"));
+		if(parameters.containsKey("livesReproduce")){
+			int tmp = Integer.parseInt(parameters.get("livesReproduce"));
 			myLivesReproduce = tmp>0?tmp:myLivesReproduce;
 		}
 		Map<Integer, String> map = new HashMap<>();
@@ -65,9 +59,11 @@ public class PredModel extends AbstractModel {
 		});
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
-		myGrid = new SquareGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
+	
+	
 
 	@Override
 	public void initialize(Map<String, String> parameters) {
@@ -87,33 +83,19 @@ public class PredModel extends AbstractModel {
 		int numFish = (int)(total*pF),numShark = (int)(total*pS);
 		int mat[][] = new int[getWidth()][getHeight()];
 		
-		int i = 0;
-		while(i < numFish){
-			int t = myRandom.nextInt(total);
-			int x = t % getWidth(), y = t / getWidth();
-			if(mat[x][y]==EMPTY_STATE){
-				mat[x][y] = FISH_STATE;
-				i++;
-			}
-		}
-		i = 0;
-		while(i < numShark){
-			int t = myRandom.nextInt(total);
-			int x = t % getWidth(), y = t / getWidth();
-			if(mat[x][y]==EMPTY_STATE){
-				mat[x][y] = SHARK_STATE;
-				i++;
-			}
-		}
+		randomFillMatrix(mat, EMPTY_STATE, FISH_STATE, numFish);
+		randomFillMatrix(mat, EMPTY_STATE, SHARK_STATE, numShark);
+
 		for (int x = 0; x < mat.length; x++)
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x,y,mat[x][y]);	
-		myGrid = new TriangleGrid(getWidth(), getHeight(), myCells);
+		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
 		myGrid.setNeighbors();
 	}
 	
 	private void addCell(int x,int y,int state){
-		PredCell cell = new PredCell(new PredState(state), new Location(x,y, getWidth(), getHeight()), myCSGUI);
+		Location loc = Location.makeLocation(x, y, getWidth(), getHeight(), myCSGUI);
+		PredCell cell = new PredCell(new PredState(state), loc, myCSGUI);
 		cell.setParameters(myFishEnergy, myMaxSharkEnergy, myLivesReproduce);
 		myCells.add(cell);
 	}

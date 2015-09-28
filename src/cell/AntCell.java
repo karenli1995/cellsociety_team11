@@ -1,10 +1,9 @@
 package cell;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
+import gui.CellGUI;
 import gui.CellSocietyGUI;
 import gui.SquareCellGUI;
 import location.Location;
@@ -37,6 +36,9 @@ public class AntCell extends AbstractCell{
 	public AntCell(State s, Location l, CellSocietyGUI CSGUI) {
 		super(s, NUM_STATES, l, CSGUI);
 		myAntState = (AntState) s;
+		myCellGUI = CellGUI.makeCellGUI(CSGUI, l);
+		myCellGUI.updateState(s);
+		addClickListener();
 		
 		myFoodPheromone = 0;
 		myHomePheromone = 0;
@@ -104,6 +106,22 @@ public class AntCell extends AbstractCell{
 //			}
 //		}
 //		
+		double foodPheromoneAfterEvap = this.getMyFoodPheromone() - (this.getMyFoodPheromone()*myEvaporationRate);
+		if(foodPheromoneAfterEvap > 0){
+			this.setMyFoodPheromone(foodPheromoneAfterEvap);
+		}else{
+			this.setMyFoodPheromone(0);
+			this.getState().setNextState(EMPTY_STATE);
+		}
+		
+		double homePheromoneAfterEvap = this.getMyHomePheromone() - (this.getMyHomePheromone()*myEvaporationRate);
+		if(homePheromoneAfterEvap > 0){
+			this.setMyFoodPheromone(homePheromoneAfterEvap);
+		}else{
+			this.setMyHomePheromone(0);
+			this.getState().setNextState(EMPTY_STATE);
+		}
+		
 		
 		if(this.getMyHasFoodItem() == false){
 			System.out.println("time");
@@ -193,6 +211,12 @@ public class AntCell extends AbstractCell{
 //				chosenCellState.setNextState(ANT_STATE);
 //				chosenCellState.setContainsAnt(true);
 				
+
+				this.getState().setNextState(myAntState.getStateInt());
+				AntCell chosenCell = (AntCell) neighbors.get(0);
+				AntState chosenCellState = (AntState) chosenCell.getState();
+				chosenCellState.setNextState(ANT_STATE);
+				chosenCellState.setContainsAnt(true);
 			}
 		}
 	}
@@ -279,7 +303,6 @@ public class AntCell extends AbstractCell{
 				double maxFoodPheromones = cell.getMyFoodPheromone();
 				double des = maxFoodPheromones-2;
 				double d = des - this.getMyFoodPheromone();
-				System.out.println("yell " + d);
 
 				if(d > 0){
 					this.setMyFoodPheromone(getMyFoodPheromone() + d);
@@ -293,11 +316,18 @@ public class AntCell extends AbstractCell{
 //						chosenCell.setMyFoodPheromone(chosenFoodPheromone + (d * myDiffusionRate));
 //						chosenCell.getState().setNextState(FOOD_PHEROMONE_STATE);
 //					}
+					for(int i=0; i<neighbors.size(); i++) {
+						AntCell chosenCell = (AntCell) neighbors.get(i);
+						double chosenFoodPheromone = chosenCell.getMyFoodPheromone();
+						
+						chosenCell.setMyFoodPheromone(chosenFoodPheromone + (d * myDiffusionRate));
+						chosenCell.getState().setNextState(FOOD_PHEROMONE_STATE);
+					}
 					
 				}
 			}
 			
 		}
 	}
-
 }
+
