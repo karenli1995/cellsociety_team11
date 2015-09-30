@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Karen Li
+
 package model;
 
 import java.util.HashMap;
@@ -21,6 +24,7 @@ public class PredModel extends AbstractModel {
 	private int myFishEnergy = 5;
 	private int myMaxSharkEnergy = 5;
 	private int myLivesReproduce = 5;
+	private int myVision = 1;
 	
 	public PredModel(CellSocietyGUI CSGUI) {
 		super(CSGUI);
@@ -60,7 +64,7 @@ public class PredModel extends AbstractModel {
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 	
 	
@@ -90,7 +94,7 @@ public class PredModel extends AbstractModel {
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x,y,mat[x][y]);	
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 	
 	private void addCell(int x,int y,int state){

@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Karen Li
+
 package model;
 
 import java.util.HashMap;
@@ -14,6 +17,7 @@ public class AntModel extends AbstractModel{
 	
 	private double myEvaporationRate = 0.25; //default value
 	private double myDiffusionRate = 0.25; //default value
+	private int myVision = 1;
 
 	private static final int EMPTY_STATE = 0;
 	private static final int NEST_STATE = 1;
@@ -61,7 +65,7 @@ public class AntModel extends AbstractModel{
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 
 	@Override
@@ -122,7 +126,7 @@ public class AntModel extends AbstractModel{
 			for (int y1 = 0; y1 < mat[x1].length; y1++)
 				addCell(x1,y1,mat[x1][y1]);	
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 	
 	private void addCell(int x,int y,int state){

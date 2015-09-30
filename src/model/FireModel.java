@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Karen Li
+
 package model;
 
 import java.util.Arrays;
@@ -21,6 +24,7 @@ public class FireModel extends AbstractModel {
 	private static final int FIRE_STATE = 2;
 	
 	private double myProbCatchFire = 0.5; //default value
+	private int myVision = 1;
 
 	public FireModel(CellSocietyGUI csGui) {
 		super(csGui);
@@ -52,7 +56,7 @@ public class FireModel extends AbstractModel {
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 
 	@Override
@@ -72,7 +76,7 @@ public class FireModel extends AbstractModel {
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x,y,mat[x][y]);	
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 	
 	private void addCell(int x,int y,int state){

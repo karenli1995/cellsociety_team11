@@ -1,3 +1,5 @@
+// This entire file is part of my masterpiece.
+// Karen Li
 
 package model;
 
@@ -19,6 +21,8 @@ public class GOLModel extends AbstractModel {
 	private static final double DEFAULT_PERCENT_LIVE_CELLS = 0.5;
 	private static final int DEAD_STATE = 0;
 	private static final int LIVE_STATE = 1;
+	
+	private int myVision = 1;
 	
 	public GOLModel(CellSocietyGUI csGui) {
 		super(csGui);
@@ -50,7 +54,7 @@ public class GOLModel extends AbstractModel {
 		if(myCells.size()<getWidth()*getHeight())
 			System.err.println("Missing Cell Info!");
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 
 	@Override
@@ -72,7 +76,7 @@ public class GOLModel extends AbstractModel {
 			for (int y = 0; y < mat[x].length; y++)
 				addCell(x,y,mat[x][y]);	
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 	
 	private void addCell(int x,int y,int state){

@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Karen Li
+
 package model;
 
 import java.util.Collections;
@@ -22,6 +25,7 @@ public class SegModel extends AbstractModel {
 	private static final int STATE_B = 2;
 
 	private double mySimilarity = 0.7; // default value
+	private int myVision = 1;
 	private double myDissatisfactionRate;
 
 	public SegModel(CellSocietyGUI csGui) {
@@ -91,7 +95,7 @@ public class SegModel extends AbstractModel {
 		if (myCells.size() < getWidth() * getHeight())
 			System.err.println("Missing Cell Info!");
 		myGrid = Grid.makeGrid(getWidth(), getHeight(), myCells, myCSGUI);
-		myGrid.setNeighbors();
+		myGrid.setNeighbors(myVision);
 	}
 
 	@Override

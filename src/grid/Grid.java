@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Karen Li
+
 package grid;
 
 import java.util.ArrayList;
@@ -68,12 +71,6 @@ public abstract class Grid {
 	/**
 	 * Set the neighbors for each cell
 	 */
-	public void setNeighbors() {
-		myCells.forEach((loc,cell)->{
-			cell.setNeighborCells(getAdjacentCells(cell));
-		});
-	}
-	
 	public void setNeighbors(int radius) {
 		myCells.forEach((loc,cell)->{
 			cell.setNeighborCells(getAdjacentCells(cell,radius));
@@ -85,7 +82,7 @@ public abstract class Grid {
 	 * @param loc The location
 	 * @return A List of adjacent locations
 	 */
-	public abstract List<Location> getAdjacentLoc(Location loc);
+	//public abstract List<Location> getAdjacentLoc(Location loc);
 	
 	public abstract List<Location> getAdjacentLoc(Location loc,int radius);
 
@@ -94,14 +91,6 @@ public abstract class Grid {
 	 * @param cell The cell
 	 * @return A List of the adjacent cells
 	 */
-	public List<Cell> getAdjacentCells(Cell cell) {
-		List<Cell> neighbors = new ArrayList<>();
-		getAdjacentLoc(cell.getLocation()).forEach(loc->{
-			neighbors.add(getCell(loc));
-		});
-		return neighbors;
-	}
-	
 	public List<Cell> getAdjacentCells(Cell cell,int radius) {
 		List<Cell> neighbors = new ArrayList<>();
 		getAdjacentLoc(cell.getLocation(),radius).forEach(loc->{

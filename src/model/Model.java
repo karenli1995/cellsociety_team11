@@ -20,7 +20,7 @@ public interface Model {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Model getModel(String name, CellSocietyGUI csGui) throws Exception {
-		String tmp = "GOLModel PredModel SegModel FireModel SugarModel";
+		String tmp = "GOLModel PredModel SegModel FireModel SugarModel AntModel";
 		List<String> models = Arrays.asList(tmp.split("\\s+"));
 		name = Model.class.getPackage().getName() + "." + name;
 		Class[] types = { CellSocietyGUI.class };
